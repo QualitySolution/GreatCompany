@@ -1,0 +1,16 @@
+<Application x:Class="GreatCompany.GreatCompanyApp"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
+             xmlns:styling="using:FluentAvalonia.Styling">
+
+    <Application.Resources>
+        <converters:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
+        <converters:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
+    </Application.Resources>
+
+    <Application.Styles>
+        <styling:FluentAvaloniaTheme PreferUserAccentColor="True" />
+    </Application.Styles>
+
+</Application>

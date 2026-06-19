@@ -25,6 +25,11 @@
         <SolidColorBrush x:Key="NavigationViewItemBackgroundPressed" Color="#082F63" />
         <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#08B99B" />
     </Window.Resources>
+    <Window.Styles>
+        <Style Selector="fa|NavigationViewItem fa|NavigationViewItem">
+            <Setter Property="Margin" Value="-20,0,0,0" />
+        </Style>
+    </Window.Styles>
     <fa:NavigationView x:Name="navigationView"
                        Background="#06275A"
                        IsPaneOpen="True"
@@ -38,6 +43,82 @@
                 <fa:NavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="Home" />
                 </fa:NavigationViewItem.IconSource>
+            </fa:NavigationViewItem>
+            <fa:NavigationViewItem x:Name="cashFlowMenuItem" Content="Денежные потоки">
+                <fa:NavigationViewItem.IconSource>
+                    <fi:FluentIconSource Icon="BuildingRetailMoney" />
+                </fa:NavigationViewItem.IconSource>
+                <fa:NavigationViewItem.MenuItems>
+                    <fa:NavigationViewItem x:Name="plannedIncomesMenuItem" Content="План - приход">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="DataTrending" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="actualIncomesMenuItem" Content="Факт - приход">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="Database" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="plannedExpensesMenuItem" Content="План - расход">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="DataTrending" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="actualExpensesMenuItem" Content="Факт - расход">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="Database" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                </fa:NavigationViewItem.MenuItems>
+            </fa:NavigationViewItem>
+            <fa:NavigationViewItem x:Name="templatesMenuItem" Content="Шаблоны">
+                <fa:NavigationViewItem.IconSource>
+                    <fi:FluentIconSource Icon="Apps" />
+                </fa:NavigationViewItem.IconSource>
+                <fa:NavigationViewItem.MenuItems>
+                    <fa:NavigationViewItem x:Name="accrualTemplatesMenuItem" Content="Шаблоны начислений">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="AppGeneric" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="paymentTemplatesMenuItem" Content="Шаблоны платежей">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="AppGeneric" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                </fa:NavigationViewItem.MenuItems>
+            </fa:NavigationViewItem>
+            <fa:NavigationViewItem x:Name="directoriesMenuItem" Content="Справочники">
+                <fa:NavigationViewItem.IconSource>
+                    <fi:FluentIconSource Icon="Database" />
+                </fa:NavigationViewItem.IconSource>
+                <fa:NavigationViewItem.MenuItems>
+                    <fa:NavigationViewItem x:Name="projectsMenuItem" Content="Проекты">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="Box" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="Дивизионы">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="PeopleTeam" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="accountsMenuItem" Content="Счета">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="PersonKey" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="incomeArticlesMenuItem" Content="Статьи дохода">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="DataTrending" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                    <fa:NavigationViewItem x:Name="expenseArticlesMenuItem" Content="Статьи расхода">
+                        <fa:NavigationViewItem.IconSource>
+                            <fi:FluentIconSource Icon="DataTrending" />
+                        </fa:NavigationViewItem.IconSource>
+                    </fa:NavigationViewItem>
+                </fa:NavigationViewItem.MenuItems>
             </fa:NavigationViewItem>
         </fa:NavigationView.MenuItems>
         <fa:NavigationView.FooterMenuItems>

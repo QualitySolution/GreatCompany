@@ -5,12 +5,24 @@
              xmlns:styling="using:FluentAvalonia.Styling">
 
     <Application.Resources>
+        <Color x:Key="SystemAccentColor">#08B99B</Color>
+        <Color x:Key="SystemAccentColorLight1">#20D1B4</Color>
+        <Color x:Key="SystemAccentColorLight2">#63E2CF</Color>
+        <Color x:Key="SystemAccentColorLight3">#A7F2E8</Color>
+        <Color x:Key="SystemAccentColorDark1">#079E86</Color>
+        <Color x:Key="SystemAccentColorDark2">#057762</Color>
+        <Color x:Key="SystemAccentColorDark3">#034F42</Color>
+        <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="#08B99B" />
+        <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#08B99B" />
+        <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#079E86" />
+        <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#057762" />
         <converters:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
         <converters:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
     </Application.Resources>
 
     <Application.Styles>
-        <styling:FluentAvaloniaTheme PreferUserAccentColor="True" />
+        <styling:FluentAvaloniaTheme PreferUserAccentColor="False"
+                                     CustomAccentColor="#08B99B" />
     </Application.Styles>
 
 </Application>

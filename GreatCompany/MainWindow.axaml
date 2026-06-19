@@ -16,13 +16,17 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Window.Resources>
-        <SolidColorBrush x:Key="NavigationViewItemForeground" Color="#EAA221" />
-        <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="#EAA221" />
-        <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="#EAA221" />
-        <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="#EAA221" />
+        <SolidColorBrush x:Key="NavigationViewItemForeground" Color="#F7FBFF" />
+        <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="#08B99B" />
+        <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="#08B99B" />
+        <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="#079E86" />
+        <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#0A346D" />
+        <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#0B3D79" />
+        <SolidColorBrush x:Key="NavigationViewItemBackgroundPressed" Color="#082F63" />
+        <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#08B99B" />
     </Window.Resources>
     <fa:NavigationView x:Name="navigationView"
-                       Background="#1F6B4E"
+                       Background="#06275A"
                        IsPaneOpen="True"
                        IsSettingsVisible="False"
                        OpenPaneLength="260"

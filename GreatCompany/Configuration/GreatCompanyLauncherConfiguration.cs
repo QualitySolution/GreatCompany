@@ -16,16 +16,14 @@ public static class GreatCompanyLauncherConfiguration {
 		services.AddConnectionType(new QsCloudConnectionTypeBase());
 
 		var options = new LauncherOptions {
-			AppTitle = "QS: Великая компания",
+			AppTitle = ApplicationConstants.ProductTitle,
 			LogoImage = assembly.GetResourceByteArray("GreatCompany.Assets.logo.png"),
 			LogoIcon = assembly.GetResourceByteArray("GreatCompany.Assets.logo.ico"),
 			ConnectionsJsonFileName = Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
 				"GreatCompany",
 				"connections.json"),
-			OldConfigFilename = Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-				"GreatCompany.ini"),
+			OldConfigFilename = null,
 			MakeDefaultConnections = () => [
 				new Dictionary<string, string> {
 					{ "Title", "По умолчанию" },
@@ -39,8 +37,8 @@ public static class GreatCompanyLauncherConfiguration {
 		configureOptions?.Invoke(options);
 
 		services.AddLauncherOptions(options);
-		services.AddSingleton<IApplicationInfo, ApplicationInfo>(_ => new ApplicationInfo {
-			ProductCode = 0,
+		services.AddSingleton<IApplicationInfo, ApplicationInfo>(provider => new ApplicationInfo {
+			ProductCode = ApplicationConstants.ProductCode,
 		});
 
 		return services;

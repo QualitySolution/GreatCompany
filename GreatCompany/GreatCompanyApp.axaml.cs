@@ -1,11 +1,16 @@
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using MySqlConnector;
 using QS.Launcher.AppRunner;
+using QS.Project;
+using QS.Project.DB;
+using QS.ViewModels.Resolve;
 
 namespace GreatCompany;
 
@@ -40,7 +45,7 @@ public partial class GreatCompanyApp : Application {
 			if(string.IsNullOrEmpty(connectionString))
 				ShowLauncher(desktop);
 			else
-				desktop.MainWindow = CreateMainWindow(login, sessionId, baseTitle);
+				desktop.MainWindow = CreateMainWindow(connectionString, login, sessionId, baseTitle);
 		}
 
 		base.OnFrameworkInitializationCompleted();
@@ -56,6 +61,7 @@ public partial class GreatCompanyApp : Application {
 		string? resultLogin = null;
 		string? resultSessionId = null;
 		string? resultBaseTitle = null;
+		string? resultConnectionString = null;
 		var previousCallback = runner.OnLogin;
 
 		runner.OnLogin = response => {
@@ -63,6 +69,7 @@ public partial class GreatCompanyApp : Application {
 			resultLogin = response.Login;
 			resultSessionId = response.Parameters.GetValueOrDefault("SessionId");
 			resultBaseTitle = response.Parameters.GetValueOrDefault("BaseTitle");
+			resultConnectionString = response.ConnectionString;
 			loginReceived.Set();
 		};
 
@@ -72,7 +79,7 @@ public partial class GreatCompanyApp : Application {
 			loginReceived.Wait();
 
 			Dispatcher.UIThread.Post(() => {
-				var mainWindow = CreateMainWindow(resultLogin, resultSessionId, resultBaseTitle);
+				var mainWindow = CreateMainWindow(resultConnectionString, resultLogin, resultSessionId, resultBaseTitle);
 				desktop.MainWindow = mainWindow;
 				desktop.ShutdownMode = ShutdownMode.OnLastWindowClose;
 				mainWindow.Show();
@@ -81,12 +88,34 @@ public partial class GreatCompanyApp : Application {
 		});
 	}
 
-	private MainWindow CreateMainWindow(string? userLogin, string? userSessionId, string? userBaseTitle) {
+	private MainWindow CreateMainWindow(string? connString, string? userLogin, string? userSessionId, string? userBaseTitle) {
 		try {
+			if(string.IsNullOrWhiteSpace(connString))
+				throw new InvalidOperationException("Строка подключения не установлена.");
+
+			var connectionStringBuilder = new MySqlConnectionStringBuilder(connString);
+			IDatabaseConnectionSettings databaseConnectionSettings = new DatabaseConnectionSettings(connectionStringBuilder);
+
 			var containerBuilder = new ContainerBuilder()
+				.AutofacDatabaseConfig()
 				.AddAvaloniaNavigation();
 
+			ILifetimeScope? builtContainer = null;
+			containerBuilder
+				.Register(_ => new AutofacViewModelResolver(builtContainer!))
+				.As<IViewModelResolver>()
+				.SingleInstance();
+
+			var services = new ServiceCollection();
+			services.AddDatabaseSettings(databaseConnectionSettings);
+			services.AddClassConfig(userLogin ?? string.Empty, userSessionId ?? string.Empty);
+			services.AddGuiClasses();
+			services.AddInteractive();
+			containerBuilder.Populate(services);
+
 			var container = containerBuilder.Build();
+			builtContainer = container;
+
 			var viewResolver = container.Resolve<QS.Navigation.IAvaloniaViewResolver>();
 			DataTemplates.Add(viewResolver);
 

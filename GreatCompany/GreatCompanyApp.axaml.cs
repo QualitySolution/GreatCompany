@@ -20,6 +20,8 @@ public partial class GreatCompanyApp : Application {
 	private readonly string? login;
 	private readonly string? sessionId;
 	private readonly string? baseTitle;
+	private ILifetimeScope? mainContainer;
+	private bool isShuttingDown;
 
 	public GreatCompanyApp() : this(null, null, null, null) {
 	}
@@ -42,10 +44,15 @@ public partial class GreatCompanyApp : Application {
 		}
 
 		if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
+			desktop.Exit += (_, _) => DisposeApplicationServices();
+
 			if(string.IsNullOrEmpty(connectionString))
 				ShowLauncher(desktop);
-			else
-				desktop.MainWindow = CreateMainWindow(connectionString, login, sessionId, baseTitle);
+			else {
+				var mainWindow = CreateMainWindow(connectionString, login, sessionId, baseTitle);
+				SetupMainWindowLifetime(desktop, mainWindow);
+				desktop.MainWindow = mainWindow;
+			}
 		}
 
 		base.OnFrameworkInitializationCompleted();
@@ -56,36 +63,33 @@ public partial class GreatCompanyApp : Application {
 
 		var launcherWindow = Program.StartupServiceProvider.GetRequiredService<QS.Launcher.Views.MainWindow>();
 		var runner = Program.StartupServiceProvider.GetRequiredService<InProcessRunner>();
-		var loginReceived = new ManualResetEventSlim(false);
-
-		string? resultLogin = null;
-		string? resultSessionId = null;
-		string? resultBaseTitle = null;
-		string? resultConnectionString = null;
 		var previousCallback = runner.OnLogin;
+		var loginAccepted = false;
 
 		runner.OnLogin = response => {
 			previousCallback?.Invoke(response);
-			resultLogin = response.Login;
-			resultSessionId = response.Parameters.GetValueOrDefault("SessionId");
-			resultBaseTitle = response.Parameters.GetValueOrDefault("BaseTitle");
-			resultConnectionString = response.ConnectionString;
-			loginReceived.Set();
-		};
 
-		launcherWindow.Show();
-
-		Task.Run(() => {
-			loginReceived.Wait();
-
+			loginAccepted = true;
 			Dispatcher.UIThread.Post(() => {
-				var mainWindow = CreateMainWindow(resultConnectionString, resultLogin, resultSessionId, resultBaseTitle);
+				var mainWindow = CreateMainWindow(
+					response.ConnectionString,
+					response.Login,
+					response.Parameters.GetValueOrDefault("SessionId"),
+					response.Parameters.GetValueOrDefault("BaseTitle"));
+
+				SetupMainWindowLifetime(desktop, mainWindow);
 				desktop.MainWindow = mainWindow;
-				desktop.ShutdownMode = ShutdownMode.OnLastWindowClose;
 				mainWindow.Show();
 				launcherWindow.Close();
 			});
-		});
+		};
+
+		launcherWindow.Closed += (_, _) => {
+			if(!loginAccepted)
+				ShutdownApplication(desktop);
+		};
+
+		launcherWindow.Show();
 	}
 
 	private MainWindow CreateMainWindow(string? connString, string? userLogin, string? userSessionId, string? userBaseTitle) {
@@ -115,6 +119,7 @@ public partial class GreatCompanyApp : Application {
 
 			var container = containerBuilder.Build();
 			builtContainer = container;
+			mainContainer = container;
 
 			var viewResolver = container.Resolve<QS.Navigation.IAvaloniaViewResolver>();
 			DataTemplates.Add(viewResolver);
@@ -128,5 +133,25 @@ public partial class GreatCompanyApp : Application {
 			logger.Error(ex, "Не удалось создать главное окно.");
 			throw;
 		}
+	}
+
+	private void SetupMainWindowLifetime(IClassicDesktopStyleApplicationLifetime desktop, MainWindow mainWindow) {
+		mainWindow.Closed += (_, _) => ShutdownApplication(desktop);
+	}
+
+	private void ShutdownApplication(IClassicDesktopStyleApplicationLifetime desktop) {
+		if(isShuttingDown)
+			return;
+
+		isShuttingDown = true;
+		DisposeApplicationServices();
+		desktop.Shutdown();
+	}
+
+	private void DisposeApplicationServices() {
+		mainContainer?.Dispose();
+		mainContainer = null;
+
+		Program.StartupServiceProvider?.Dispose();
 	}
 }

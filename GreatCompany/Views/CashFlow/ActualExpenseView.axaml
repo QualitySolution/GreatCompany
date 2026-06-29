@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.ViewModels.CashFlow"
+             xmlns:controls="clr-namespace:GreatCompany.Controls"
+             x:Class="GreatCompany.Views.CashFlow.ActualExpenseView"
+             x:CompileBindings="True"
+             x:DataType="vm:ActualExpenseViewModel">
+    <StackPanel Margin="15" Spacing="10" Width="460" VerticalAlignment="Top">
+        <TextBlock Text="Дата" />
+        <CalendarDatePicker SelectedDate="{Binding Entity.Date}" HorizontalAlignment="Stretch" />
+        <TextBlock Text="Назначение" />
+        <TextBox Text="{Binding Entity.Purpose}" AcceptsReturn="True" Height="60" TextWrapping="Wrap" />
+        <TextBlock Text="Сумма" />
+        <NumericUpDown Value="{Binding Entity.Amount}" Minimum="0" FormatString="0.00" />
+        <TextBlock Text="Сумма НДС" />
+        <NumericUpDown Value="{Binding Entity.VatAmount}" Minimum="0" FormatString="0.00" />
+        <TextBlock Text="Счёт" />
+        <controls:ReferencePicker DataContext="{Binding AccountPicker}" />
+        <TextBlock Text="Статья расхода" />
+        <controls:ReferencePicker DataContext="{Binding ArticlePicker}" />
+        <TextBlock Text="Проект (или дивизион ниже)" />
+        <controls:ReferencePicker DataContext="{Binding ProjectPicker}" />
+        <TextBlock Text="Дивизион" />
+        <controls:ReferencePicker DataContext="{Binding DivisionPicker}" />
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+            <Button Content="Сохранить" Command="{Binding SaveCommand}" />
+            <Button Content="Отмена" Command="{Binding CancelCommand}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.Journal.ViewModels.CashFlow"
+             xmlns:models="clr-namespace:GreatCompany.Data.Models"
+             x:Class="GreatCompany.Journal.Views.CashFlow.PlannedIncomeJournalView"
+             x:CompileBindings="True"
+             x:DataType="vm:PlannedIncomeJournalViewModel">
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+            <Button Content="Создать" Command="{Binding CreateCommand}" />
+            <Button Content="Изменить" Command="{Binding EditCommand}" />
+            <Button Content="Удалить" Command="{Binding DeleteCommand}" />
+            <Button Content="Обновить" Command="{Binding RefreshCommand}" />
+            <Button Content="Создать по шаблону" Command="{Binding CreateFromTemplateCommand}" />
+            <TextBox Width="300" Watermark="Поиск по назначению и проекту..." Text="{Binding Search}" />
+        </StackPanel>
+        <DataGrid ItemsSource="{Binding Items}"
+                  SelectedItem="{Binding Selected}"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  DoubleTapped="OnRowDoubleTapped">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата" Width="100" Binding="{Binding Date, DataType=models:PlannedIncomeRow, StringFormat='{}{0:dd.MM.yyyy}'}" />
+                <DataGridTextColumn Header="Назначение" Width="*" Binding="{Binding Purpose, DataType=models:PlannedIncomeRow}" />
+                <DataGridTextColumn Header="Сумма" Width="110" Binding="{Binding Amount, DataType=models:PlannedIncomeRow, StringFormat='{}{0:N2}'}" />
+                <DataGridTextColumn Header="НДС" Width="100" Binding="{Binding VatAmount, DataType=models:PlannedIncomeRow, StringFormat='{}{0:N2}'}" />
+                <DataGridTextColumn Header="Счёт" Width="140" Binding="{Binding AccountName, DataType=models:PlannedIncomeRow}" />
+                <DataGridTextColumn Header="Проект" Width="160" Binding="{Binding ProjectName, DataType=models:PlannedIncomeRow}" />
+                <DataGridTextColumn Header="Статья" Width="160" Binding="{Binding ArticleName, DataType=models:PlannedIncomeRow}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

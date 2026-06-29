@@ -102,7 +102,8 @@ public partial class GreatCompanyApp : Application {
 
 			var containerBuilder = new ContainerBuilder()
 				.AutofacDatabaseConfig()
-				.AddAvaloniaNavigation();
+				.AddAvaloniaNavigation()
+				.AddCashFlow();
 
 			ILifetimeScope? builtContainer = null;
 			containerBuilder

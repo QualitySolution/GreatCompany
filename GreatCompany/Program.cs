@@ -14,8 +14,6 @@ public class Program {
 
 	[STAThread]
 	public static void Main(string[] args) {
-		logger.Info("=== Старт приложения ===");
-
 		string? connectionString = Environment.GetEnvironmentVariable("QS_CONNECTION_STRING");
 		string? login = Environment.GetEnvironmentVariable("QS_LOGIN");
 		string? sessionId = Environment.GetEnvironmentVariable("QS_SessionId");
@@ -37,7 +35,6 @@ public class Program {
 		}
 
 		BuildAvaloniaApp(connectionString, login, sessionId, baseTitle).StartWithClassicDesktopLifetime(args);
-		logger.Info("=== Завершение приложения ===");
 	}
 
 	private static void ConfigureStartupServices(bool withLauncher) {

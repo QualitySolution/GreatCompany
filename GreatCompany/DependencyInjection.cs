@@ -23,7 +23,7 @@ namespace GreatCompany;
 internal static class DependencyInjection {
 	public static IServiceCollection AddDatabaseSettings(this IServiceCollection services, IDatabaseConnectionSettings settings) {
 		return services
-			.AddMappingAssemblies(typeof(UserBase).Assembly)
+			.AddMappingAssemblies(typeof(UserBase).Assembly, typeof(DependencyInjection).Assembly)
 			.AddDatabaseConnection()
 			.AddSingleton(settings)
 			.AddDatabaseConnectionString()
@@ -58,6 +58,7 @@ internal static class DependencyInjection {
 	}
 
 	public static ContainerBuilder AddAvaloniaNavigation(this ContainerBuilder builder) {
+		builder.RegisterType<GreatCompany.Navigation.CashFlowPageHashGenerator>().As<IPageHashGenerator>().SingleInstance();
 		builder.RegisterType<AvaloniaNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 		builder.RegisterType<AvaloniaPageTabFactory>().AsSelf();
 		builder.RegisterType<AvaloniaPageWindowFactory>().AsSelf();
@@ -81,6 +82,15 @@ internal static class DependencyInjection {
 
 		builder.RegisterType<MainWindow>();
 		builder.RegisterType<ChangeLogViewModel>().AsSelf();
+
+		return builder;
+	}
+
+	public static ContainerBuilder AddCashFlow(this ContainerBuilder builder) {
+		var assembly = typeof(DependencyInjection).Assembly;
+		builder.RegisterAssemblyTypes(assembly)
+			.Where(t => t.Name.EndsWith("Repository") || t.Name.EndsWith("ViewModel"))
+			.AsSelf();
 
 		return builder;
 	}

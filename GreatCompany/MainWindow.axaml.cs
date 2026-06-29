@@ -1,5 +1,9 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
+using GreatCompany.Journal.ViewModels.CashFlow;
+using GreatCompany.Journal.ViewModels.Reference;
+using GreatCompany.Journal.ViewModels.Templates;
 using QS.Navigation;
 using QS.Project.Versioning.ViewModels;
 
@@ -38,7 +42,29 @@ public partial class MainWindow : Window {
 	}
 
 	private void RegMenuItemActions() {
-		menuItems.Add(changeLogMenuItem, () => navigationManager?.OpenViewModel<ChangeLogViewModel>(null));
+		menuItems.Add(plannedIncomesMenuItem, Open<PlannedIncomeJournalViewModel>);
+		menuItems.Add(actualIncomesMenuItem, Open<ActualIncomeJournalViewModel>);
+		menuItems.Add(plannedExpensesMenuItem, Open<PlannedExpenseJournalViewModel>);
+		menuItems.Add(actualExpensesMenuItem, Open<ActualExpenseJournalViewModel>);
+
+		menuItems.Add(accrualTemplatesMenuItem, Open<AccrualTemplateJournalViewModel>);
+		menuItems.Add(paymentTemplatesMenuItem, Open<PaymentTemplateJournalViewModel>);
+
+		menuItems.Add(projectsMenuItem, Open<ProjectJournalViewModel>);
+		menuItems.Add(divisionsMenuItem, Open<DivisionJournalViewModel>);
+		menuItems.Add(accountsMenuItem, Open<AccountJournalViewModel>);
+		menuItems.Add(incomeArticlesMenuItem, Open<IncomeArticleJournalViewModel>);
+		menuItems.Add(expenseArticlesMenuItem, Open<ExpenseArticleJournalViewModel>);
+
+		menuItems.Add(changeLogMenuItem, Open<ChangeLogViewModel>);
+	}
+
+	// Открывает (или переключает на уже открытую) вкладку. Повторный выбор активной вкладки в
+	// TabView иногда не применяется сразу, поэтому дополнительно форсим её через диспетчер.
+	private void Open<TViewModel>() where TViewModel : class, IDialogViewModel {
+		var page = navigationManager?.OpenViewModel<TViewModel>(null);
+		if(page != null)
+			Dispatcher.UIThread.Post(() => navigationManager!.CurrentPage = page);
 	}
 
 	private void OnNavViewSelectionChanged(object? sender, NavigationViewSelectionChangedEventArgs e) {

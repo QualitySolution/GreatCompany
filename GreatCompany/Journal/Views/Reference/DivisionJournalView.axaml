@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.Journal.ViewModels.Reference"
+             xmlns:models="clr-namespace:GreatCompany.Data.Models"
+             x:Class="GreatCompany.Journal.Views.Reference.DivisionJournalView"
+             x:CompileBindings="True"
+             x:DataType="vm:DivisionJournalViewModel">
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+            <Button Content="Создать" Command="{Binding CreateCommand}" />
+            <Button Content="Изменить" Command="{Binding EditCommand}" />
+            <Button Content="Удалить" Command="{Binding DeleteCommand}" />
+            <Button Content="Обновить" Command="{Binding RefreshCommand}" />
+            <Button Content="Выбрать" Command="{Binding SelectCommand}" IsVisible="{Binding SelectMode}" />
+            <TextBox Width="250" Watermark="Поиск..." Text="{Binding Search}" />
+        </StackPanel>
+        <DataGrid ItemsSource="{Binding Items}"
+                  SelectedItem="{Binding Selected}"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  DoubleTapped="OnRowDoubleTapped">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Код" Width="80" Binding="{Binding Id, DataType=models:DivisionRow}" />
+                <DataGridTextColumn Header="Название" Width="*" Binding="{Binding Name, DataType=models:DivisionRow}" />
+                <DataGridTextColumn Header="Головной дивизион" Width="220" Binding="{Binding ParentName, DataType=models:DivisionRow}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

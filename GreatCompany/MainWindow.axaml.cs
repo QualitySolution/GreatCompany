@@ -76,7 +76,14 @@ public partial class MainWindow : Window {
 		if(navigationManager == null)
 			return;
 
-		foreach(var page in navigationManager.Pages.ToList())
-			navigationManager.AskClosePage(page, CloseSource.AppQuit);
+		// обходим по снимку: закрытие вкладки меняет саму коллекцию Pages
+		foreach(var page in navigationManager.Pages.ToList()) {
+			if(navigationManager.AskClosePage(page, CloseSource.AppQuit))
+				continue;
+
+			// пользователь отменил закрытие вкладки с несохраненными изменениями — не выходим
+			e.Cancel = true;
+			return;
+		}
 	}
 }

@@ -3,17 +3,21 @@ using GreatCompany.Data;
 using GreatCompany.Data.Models;
 using GreatCompany.Journal.ViewModels.Reference;
 using GreatCompany.Navigation;
+using QS.Dialog;
+using QS.DomainModel.Entity;
 using QS.Navigation;
+using QS.Validation;
 
 namespace GreatCompany.ViewModels.CashFlow;
 
 public class ActualExpenseViewModel : FormViewModelBase {
 	readonly Repository repo;
 
-	public ActualExpenseViewModel(int id, Repository repo, INavigationManager navigation) : base(navigation) {
+	public ActualExpenseViewModel(int id, Repository repo, INavigationManager navigation, IValidator validator, IInteractiveMessage interactive)
+		: base(navigation, validator, interactive) {
 		this.repo = repo;
 		Entity = id == 0 ? new ActualExpense() : repo.Get<ActualExpense>(id) ?? new ActualExpense();
-		Title = id == 0 ? "Новый факт расхода" : $"Факт расхода №{Entity.Id}";
+		Title = Entity.Id == 0 ? "Новый факт расхода" : $"Факт расхода №{Entity.Id}";
 
 		AccountPicker = new ReferencePickerViewModel(repo.References<Account>(), onChosen => NavigationManager.OpenReferenceSelect<AccountJournalViewModel>(this, onChosen));
 		ArticlePicker = new ReferencePickerViewModel(repo.References<ExpenseArticle>(), onChosen => NavigationManager.OpenReferenceSelect<ExpenseArticleJournalViewModel>(this, onChosen));
@@ -24,6 +28,8 @@ public class ActualExpenseViewModel : FormViewModelBase {
 		ArticlePicker.SelectById(Entity.ExpenseArticleId);
 		if(Entity.ProjectId is int pid) ProjectPicker.SelectById(pid);
 		if(Entity.DivisionId is int did) DivisionPicker.SelectById(did);
+
+		TrackChanges(Entity, AccountPicker, ArticlePicker, ProjectPicker, DivisionPicker);
 	}
 
 	public ActualExpense Entity { get; }
@@ -49,22 +55,19 @@ public class ActualExpenseViewModel : FormViewModelBase {
 		if(t.DivisionId is int did) DivisionPicker.SelectById(did);
 	}
 
-	protected override bool Save() {
-		if(string.IsNullOrWhiteSpace(Entity.Purpose) || AccountPicker.Selected == null || ArticlePicker.Selected == null)
-			return false;
-		if(ProjectPicker.Selected == null && DivisionPicker.Selected == null)
-			return false;
-
-		Entity.AccountId = AccountPicker.Selected.Id;
-		Entity.ExpenseArticleId = ArticlePicker.Selected.Id;
+	protected override IDomainObject? SaveEntity() {
+		Entity.AccountId = AccountPicker.Selected?.Id ?? 0;
+		Entity.ExpenseArticleId = ArticlePicker.Selected?.Id ?? 0;
 		if(ProjectPicker.Selected != null) {
 			Entity.ProjectId = ProjectPicker.Selected.Id;
 			Entity.DivisionId = repo.Get<Project>(ProjectPicker.Selected.Id)?.DivisionId;
 		} else {
 			Entity.ProjectId = null;
-			Entity.DivisionId = DivisionPicker.Selected!.Id;
+			Entity.DivisionId = DivisionPicker.Selected?.Id;
 		}
+		if(!Validate(Entity))
+			return null;
 		repo.Save(Entity);
-		return true;
+		return Entity;
 	}
 }

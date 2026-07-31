@@ -1,4 +1,4 @@
-using System.Data.Common;
+﻿using System.Data.Common;
 using GreatCompany.Data.Models;
 using NHibernate;
 using NHibernate.Engine;
@@ -9,11 +9,11 @@ namespace GreatCompany.Data.Mappings;
 
 public class TaxRegimeType : IUserType {
 	public SqlType[] SqlTypes => new[] { NHibernateUtil.String.SqlType };
-	public System.Type ReturnedType => typeof(TaxRegime);
+	public Type ReturnedType => typeof(TaxRegime);
 	public bool IsMutable => false;
 
 	public object NullSafeGet(DbDataReader rs, string[] names, ISessionImplementor session, object owner) {
-		var index = rs.GetOrdinal(names[0]);
+		int index = rs.GetOrdinal(names[0]);
 		if(rs.IsDBNull(index))
 			return TaxRegime.Vat;
 		return Enum.Parse<TaxRegime>(Convert.ToString(rs.GetValue(index))!, ignoreCase: true);

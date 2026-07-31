@@ -1,5 +1,4 @@
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -8,14 +7,15 @@ using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using QS.Launcher.AppRunner;
-using QS.Project;
 using QS.Project.DB;
-using QS.ViewModels.Resolve;
+using ReactiveUI;
+using System.Reactive;
 
 namespace GreatCompany;
 
 public partial class GreatCompanyApp : Application {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private readonly IServiceProvider? startupServices;
 	private readonly string? connectionString;
 	private readonly string? login;
 	private readonly string? sessionId;
@@ -23,10 +23,12 @@ public partial class GreatCompanyApp : Application {
 	private ILifetimeScope? mainContainer;
 	private bool isShuttingDown;
 
-	public GreatCompanyApp() : this(null, null, null, null) {
+	public GreatCompanyApp() : this(null, null, null, null, null) {
 	}
 
-	public GreatCompanyApp(string? connectionString, string? login, string? sessionId, string? baseTitle) {
+	public GreatCompanyApp(IServiceProvider? startupServices,
+		string? connectionString, string? login, string? sessionId, string? baseTitle) {
+		this.startupServices = startupServices;
 		this.connectionString = connectionString;
 		this.login = login;
 		this.sessionId = sessionId;
@@ -61,8 +63,9 @@ public partial class GreatCompanyApp : Application {
 	private void ShowLauncher(IClassicDesktopStyleApplicationLifetime desktop) {
 		desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-		var launcherWindow = Program.StartupServiceProvider.GetRequiredService<QS.Launcher.Views.MainWindow>();
-		var runner = Program.StartupServiceProvider.GetRequiredService<InProcessRunner>();
+		var services = startupServices ?? throw new InvalidOperationException("Сервисы лончера не переданы.");
+		var launcherWindow = services.GetRequiredService<QS.Launcher.Views.MainWindow>();
+		var runner = services.GetRequiredService<InProcessRunner>();
 		var previousCallback = runner.OnLogin;
 		var loginAccepted = false;
 
@@ -93,47 +96,28 @@ public partial class GreatCompanyApp : Application {
 	}
 
 	private MainWindow CreateMainWindow(string? connString, string? userLogin, string? userSessionId, string? userBaseTitle) {
-		try {
-			if(string.IsNullOrWhiteSpace(connString))
-				throw new InvalidOperationException("Строка подключения не установлена.");
+		if(string.IsNullOrWhiteSpace(connString))
+			throw new InvalidOperationException("Строка подключения не установлена.");
 
-			var connectionStringBuilder = new MySqlConnectionStringBuilder(connString);
-			IDatabaseConnectionSettings databaseConnectionSettings = new DatabaseConnectionSettings(connectionStringBuilder);
+		var settings = new DatabaseConnectionSettings(new MySqlConnectionStringBuilder(connString));
+		mainContainer?.Dispose(); // вход из лончера повторный: контейнер прошлого сеанса больше не нужен
+		mainContainer = CompositionRoot.BuildContainer(
+			settings, userLogin ?? string.Empty, userSessionId ?? string.Empty);
 
-			var containerBuilder = new ContainerBuilder()
-				.AutofacDatabaseConfig()
-				.AddAvaloniaNavigation()
-				.AddCashFlow();
+		// Исключение в ReactiveCommand по умолчанию роняет приложение — вместо этого лог + сообщение
+		var interactiveMessage = mainContainer.Resolve<QS.Dialog.IInteractiveMessage>();
+		RxApp.DefaultExceptionHandler = Observer.Create<Exception>(ex => {
+			logger.Error(ex, "Необработанная ошибка в команде интерфейса.");
+			interactiveMessage.ShowMessage(QS.Dialog.ImportanceLevel.Error, ex.Message, "Ошибка");
+		});
 
-			ILifetimeScope? builtContainer = null;
-			containerBuilder
-				.Register(_ => new AutofacViewModelResolver(builtContainer!))
-				.As<IViewModelResolver>()
-				.SingleInstance();
+		DataTemplates.Add(mainContainer.Resolve<QS.Navigation.IAvaloniaViewResolver>());
 
-			var services = new ServiceCollection();
-			services.AddDatabaseSettings(databaseConnectionSettings);
-			services.AddClassConfig(userLogin ?? string.Empty, userSessionId ?? string.Empty);
-			services.AddGuiClasses();
-			services.AddInteractive();
-			containerBuilder.Populate(services);
-
-			var container = containerBuilder.Build();
-			builtContainer = container;
-			mainContainer = container;
-
-			var viewResolver = container.Resolve<QS.Navigation.IAvaloniaViewResolver>();
-			DataTemplates.Add(viewResolver);
-
-			return container.Resolve<MainWindow>(
-				new TypedParameter(typeof(string), userLogin),
-				new TypedParameter(typeof(string), userSessionId),
-				new TypedParameter(typeof(string), userBaseTitle));
-		}
-		catch(Exception ex) {
-			logger.Error(ex, "Не удалось создать главное окно.");
-			throw;
-		}
+		// Параметры окна — только именованными: три строковых подряд Autofac по типу не различит
+		return mainContainer.Resolve<MainWindow>(
+			new NamedParameter("login", userLogin),
+			new NamedParameter("sessionId", userSessionId),
+			new NamedParameter("baseTitle", userBaseTitle));
 	}
 
 	private void SetupMainWindowLifetime(IClassicDesktopStyleApplicationLifetime desktop, MainWindow mainWindow) {
@@ -149,10 +133,9 @@ public partial class GreatCompanyApp : Application {
 		desktop.Shutdown();
 	}
 
+	// Сервисы лончера освобождает Program — он их и создал
 	private void DisposeApplicationServices() {
 		mainContainer?.Dispose();
 		mainContainer = null;
-
-		Program.StartupServiceProvider?.Dispose();
 	}
 }

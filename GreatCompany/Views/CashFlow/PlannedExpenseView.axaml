@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:GreatCompany.ViewModels.CashFlow"
              xmlns:controls="clr-namespace:GreatCompany.Controls"
@@ -18,9 +18,9 @@
         <controls:ReferencePicker DataContext="{Binding AccountPicker}" />
         <TextBlock Text="Статья расхода" />
         <controls:ReferencePicker DataContext="{Binding ArticlePicker}" />
-        <TextBlock Text="Проект (или дивизион ниже)" />
+        <TextBlock Text="Проект (или Подразделение ниже)" />
         <controls:ReferencePicker DataContext="{Binding ProjectPicker}" />
-        <TextBlock Text="Дивизион" />
+        <TextBlock Text="Подразделение" />
         <controls:ReferencePicker DataContext="{Binding DivisionPicker}" />
         <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
             <Button Content="Сохранить" Command="{Binding SaveCommand}" />

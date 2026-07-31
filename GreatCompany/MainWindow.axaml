@@ -1,4 +1,4 @@
-<Window x:Class="GreatCompany.MainWindow"
+﻿<Window x:Class="GreatCompany.MainWindow"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -101,7 +101,7 @@
                             <fi:FluentIconSource Icon="Box" />
                         </fa:NavigationViewItem.IconSource>
                     </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="Дивизионы">
+                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="подразделения">
                         <fa:NavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="PeopleTeam" />
                         </fa:NavigationViewItem.IconSource>

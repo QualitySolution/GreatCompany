@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:GreatCompany.Journal.ViewModels.CashFlow"
              xmlns:models="clr-namespace:GreatCompany.Data.Models"
@@ -25,7 +25,7 @@
                 <DataGridTextColumn Header="Сумма" Width="110" Binding="{Binding Amount, DataType=models:ActualExpenseRow, StringFormat='{}{0:N2}'}" />
                 <DataGridTextColumn Header="НДС" Width="100" Binding="{Binding VatAmount, DataType=models:ActualExpenseRow, StringFormat='{}{0:N2}'}" />
                 <DataGridTextColumn Header="Счёт" Width="130" Binding="{Binding AccountName, DataType=models:ActualExpenseRow}" />
-                <DataGridTextColumn Header="Дивизион" Width="140" Binding="{Binding DivisionName, DataType=models:ActualExpenseRow}" />
+                <DataGridTextColumn Header="Подразделение" Width="140" Binding="{Binding DivisionName, DataType=models:ActualExpenseRow}" />
                 <DataGridTextColumn Header="Проект" Width="140" Binding="{Binding ProjectName, DataType=models:ActualExpenseRow}" />
                 <DataGridTextColumn Header="Статья" Width="140" Binding="{Binding ArticleName, DataType=models:ActualExpenseRow}" />
             </DataGrid.Columns>

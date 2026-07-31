@@ -1,6 +1,7 @@
 using GreatCompany.Data;
 using GreatCompany.Data.Models;
 using GreatCompany.ViewModels.Templates;
+using QS.Dialog;
 using QS.Navigation;
 
 namespace GreatCompany.Journal.ViewModels.Templates;
@@ -8,7 +9,7 @@ namespace GreatCompany.Journal.ViewModels.Templates;
 public class PaymentTemplateJournalViewModel : ReferenceJournalViewModelBase<PaymentTemplateRow> {
 	readonly Repository repo;
 
-	public PaymentTemplateJournalViewModel(Repository repo, INavigationManager navigation) : base(navigation) {
+	public PaymentTemplateJournalViewModel(Repository repo, INavigationManager navigation, IInteractiveMessage interactive) : base(navigation, interactive) {
 		this.repo = repo;
 		Title = "Шаблоны платежей";
 		Reload();
@@ -17,5 +18,5 @@ public class PaymentTemplateJournalViewModel : ReferenceJournalViewModelBase<Pay
 	protected override IEnumerable<PaymentTemplateRow> Load(string search) => repo.PaymentTemplates(search);
 	protected override void Create() => OpenCard<PaymentTemplateViewModel>(0);
 	protected override void Edit(PaymentTemplateRow row) => OpenCard<PaymentTemplateViewModel>(row.Id);
-	protected override void Delete(PaymentTemplateRow row) { repo.Delete<PaymentTemplate>(row.Id); Reload(); }
+	protected override void Delete(PaymentTemplateRow row) { if(repo.Delete<PaymentTemplate>(row.Id)) Reload(); else NotifyDeleteBlocked(); }
 }

@@ -1,4 +1,4 @@
-using Autofac;
+﻿using Autofac;
 using FluentNHibernate.Conventions;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
@@ -7,12 +7,16 @@ using QS.Cloud.Client;
 using QS.DomainModel.UoW;
 using QS.Extensions.Observable.Collections.List;
 using QS.Navigation;
+using GreatCompany.ViewModels.CashFlow;
+using GreatCompany.ViewModels.Reference;
+using GreatCompany.ViewModels.Templates;
 using QS.Project;
 using QS.Project.Core;
 using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Services;
+using QS.Validation;
 using QS.Project.Versioning.ViewModels;
 using QS.Project.Versioning.Views;
 using QS.Project.Versioning;
@@ -58,7 +62,8 @@ internal static class DependencyInjection {
 	}
 
 	public static ContainerBuilder AddAvaloniaNavigation(this ContainerBuilder builder) {
-		builder.RegisterType<GreatCompany.Navigation.CashFlowPageHashGenerator>().As<IPageHashGenerator>().SingleInstance();
+		builder.Register(_ => new DefaultPageHashGenerator(new IExtraPageHashGenerator[] { MakeHashParameters() }))
+			.As<IPageHashGenerator>().SingleInstance();
 		builder.RegisterType<AvaloniaNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 		builder.RegisterType<AvaloniaPageTabFactory>().AsSelf();
 		builder.RegisterType<AvaloniaPageWindowFactory>().AsSelf();
@@ -87,11 +92,28 @@ internal static class DependencyInjection {
 	}
 
 	public static ContainerBuilder AddCashFlow(this ContainerBuilder builder) {
+		builder.Register(_ => new ObjectValidator()).As<IValidator>().SingleInstance();
+
 		var assembly = typeof(DependencyInjection).Assembly;
 		builder.RegisterAssemblyTypes(assembly)
-			.Where(t => t.Name.EndsWith("Repository") || t.Name.EndsWith("ViewModel"))
+			.Where(t => t.Name.EndsWith("Repository", StringComparison.Ordinal) || t.Name.EndsWith("ViewModel", StringComparison.Ordinal))
 			.AsSelf();
 
 		return builder;
 	}
+
+	static WithParametersHashGenerator MakeHashParameters() =>
+		new WithParametersHashGenerator()
+			.Configure<PlannedIncomeViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<ActualIncomeViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<PlannedExpenseViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<ActualExpenseViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<AccountViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<DivisionViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<ProjectViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<IncomeArticleViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<ExpenseArticleViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<AccrualTemplateViewModel>().AddParameter<int>(id => id.ToString())
+			.Configure<PaymentTemplateViewModel>().AddParameter<int>(id => id.ToString())
+			.End();
 }

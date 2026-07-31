@@ -25,7 +25,7 @@ public static class GreatCompanyLauncherConfiguration {
 				"connections.json"),
 			OldConfigFilename = null,
 			MakeDefaultConnections = () => [
-				new Dictionary<string, string> {
+				new Dictionary<string, string>(StringComparer.Ordinal) {
 					{ "Title", "По умолчанию" },
 					{ "Type", "QSCloud" },
 					{ "Account", "qsolution" },

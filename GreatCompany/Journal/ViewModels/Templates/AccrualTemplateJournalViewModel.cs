@@ -1,6 +1,7 @@
 using GreatCompany.Data;
 using GreatCompany.Data.Models;
 using GreatCompany.ViewModels.Templates;
+using QS.Dialog;
 using QS.Navigation;
 
 namespace GreatCompany.Journal.ViewModels.Templates;
@@ -8,7 +9,7 @@ namespace GreatCompany.Journal.ViewModels.Templates;
 public class AccrualTemplateJournalViewModel : ReferenceJournalViewModelBase<AccrualTemplateRow> {
 	readonly Repository repo;
 
-	public AccrualTemplateJournalViewModel(Repository repo, INavigationManager navigation) : base(navigation) {
+	public AccrualTemplateJournalViewModel(Repository repo, INavigationManager navigation, IInteractiveMessage interactive) : base(navigation, interactive) {
 		this.repo = repo;
 		Title = "Шаблоны начислений";
 		Reload();
@@ -17,5 +18,5 @@ public class AccrualTemplateJournalViewModel : ReferenceJournalViewModelBase<Acc
 	protected override IEnumerable<AccrualTemplateRow> Load(string search) => repo.AccrualTemplates(search);
 	protected override void Create() => OpenCard<AccrualTemplateViewModel>(0);
 	protected override void Edit(AccrualTemplateRow row) => OpenCard<AccrualTemplateViewModel>(row.Id);
-	protected override void Delete(AccrualTemplateRow row) { repo.Delete<AccrualTemplate>(row.Id); Reload(); }
+	protected override void Delete(AccrualTemplateRow row) { if(repo.Delete<AccrualTemplate>(row.Id)) Reload(); else NotifyDeleteBlocked(); }
 }

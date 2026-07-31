@@ -1,6 +1,8 @@
-using GreatCompany.Data.Models;
+﻿using GreatCompany.Data.Models;
+using MySqlConnector;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Exceptions;
 using NHibernate.SqlCommand;
 using NHibernate.Transform;
 using QS.DomainModel.Entity;
@@ -21,21 +23,30 @@ public class Repository(IUnitOfWorkFactory uowFactory) {
 		return entity.Id;
 	}
 
-	public void Delete<T>(int id) where T : class, IDomainObject {
+	public bool Delete<T>(int id) where T : class, IDomainObject {
 		using var uow = uowFactory.Create();
 		var entity = uow.GetById<T>(id);
 		if(entity == null)
-			return;
-		uow.Delete(entity);
-		uow.Commit();
+			return true;
+		try {
+			uow.Delete(entity);
+			uow.Commit();
+			return true;
+		}
+		catch(GenericADOException ex) when(ex.InnerException is MySqlException { Number: 1451 or 1217 }) {
+			return false;
+		}
 	}
 
-	// Список справочника для пикеров: только id и имя
 	public IReadOnlyList<ReferenceItem> References<T>() where T : class, IReferenceRow {
 		using var uow = uowFactory.Create();
-		return uow.Session.QueryOver<T>().List()
-			.OrderBy(x => x.Name)
-			.Select(x => new ReferenceItem(x.Id, x.Name))
+		return uow.Session.QueryOver<T>()
+			.SelectList(list => list
+				.Select(x => x.Id)
+				.Select(x => x.Name))
+			.OrderBy(x => x.Name).Asc
+			.List<object[]>()
+			.Select(x => new ReferenceItem((int)x[0], (string)x[1]))
 			.ToList();
 	}
 

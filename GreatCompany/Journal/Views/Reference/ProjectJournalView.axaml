@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:GreatCompany.Journal.ViewModels.Reference"
              xmlns:models="clr-namespace:GreatCompany.Data.Models"
@@ -22,7 +22,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Код" Width="80" Binding="{Binding Id, DataType=models:ProjectRow}" />
                 <DataGridTextColumn Header="Название" Width="*" Binding="{Binding Name, DataType=models:ProjectRow}" />
-                <DataGridTextColumn Header="Дивизион" Width="220" Binding="{Binding DivisionName, DataType=models:ProjectRow}" />
+                <DataGridTextColumn Header="Подразделение" Width="220" Binding="{Binding DivisionName, DataType=models:ProjectRow}" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

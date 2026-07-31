@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:GreatCompany.ViewModels.Reference"
              xmlns:controls="clr-namespace:GreatCompany.Controls"
@@ -8,7 +8,7 @@
     <StackPanel Margin="15" Spacing="10" Width="400" VerticalAlignment="Top">
         <TextBlock Text="Название" />
         <TextBox Text="{Binding Entity.Name}" />
-        <TextBlock Text="Головной дивизион" />
+        <TextBlock Text="Головное подразделение" />
         <controls:ReferencePicker DataContext="{Binding ParentPicker}" />
         <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
             <Button Content="Сохранить" Command="{Binding SaveCommand}" />

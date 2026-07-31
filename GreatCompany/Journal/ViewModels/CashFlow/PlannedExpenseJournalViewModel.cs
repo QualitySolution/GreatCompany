@@ -4,6 +4,7 @@ using GreatCompany.Data.Models;
 using GreatCompany.Journal.ViewModels.Templates;
 using GreatCompany.Navigation;
 using GreatCompany.ViewModels.CashFlow;
+using QS.Dialog;
 using QS.Navigation;
 using ReactiveUI;
 
@@ -12,7 +13,7 @@ namespace GreatCompany.Journal.ViewModels.CashFlow;
 public class PlannedExpenseJournalViewModel : JournalViewModelBase<PlannedExpenseRow> {
 	readonly Repository repo;
 
-	public PlannedExpenseJournalViewModel(Repository repo, INavigationManager navigation) : base(navigation) {
+	public PlannedExpenseJournalViewModel(Repository repo, INavigationManager navigation, IInteractiveMessage interactive) : base(navigation, interactive) {
 		this.repo = repo;
 		Title = "План - расход";
 		CreateFromTemplateCommand = ReactiveCommand.Create(CreateFromTemplate);
@@ -24,13 +25,13 @@ public class PlannedExpenseJournalViewModel : JournalViewModelBase<PlannedExpens
 	protected override IEnumerable<PlannedExpenseRow> Load(string search) => repo.PlannedExpenses(search);
 	protected override void Create() => OpenCard<PlannedExpenseViewModel>(0);
 	protected override void Edit(PlannedExpenseRow row) => OpenCard<PlannedExpenseViewModel>(row.Id);
-	protected override void Delete(PlannedExpenseRow row) { repo.Delete<PlannedExpense>(row.Id); Reload(); }
+	protected override void Delete(PlannedExpenseRow row) { if(repo.Delete<PlannedExpense>(row.Id)) Reload(); else NotifyDeleteBlocked(); }
 
 	void CreateFromTemplate() {
 		NavigationManager.OpenReferenceSelect<PaymentTemplateJournalViewModel>(this, template => {
 			var page = NavigationManager.OpenViewModel<PlannedExpenseViewModel, int>(
 				this, 0, OpenPageOptions.IgnoreHash, card => card.ApplyTemplate(template.Id));
-			page.ViewModel.Saved += Reload;
+			page.ViewModel.EntitySaved += (_, _) => Reload();
 		});
 	}
 }

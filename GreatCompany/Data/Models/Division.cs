@@ -1,30 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 
 namespace GreatCompany.Data.Models;
 
-[Appellative(Gender = GrammaticalGender.Masculine, Nominative = "родразделение", NominativePlural = "родразделения")]
-public class Division : PropertyChangedBase, IDomainObject, IReferenceRow, IValidatableObject {
+[Appellative(Gender = GrammaticalGender.Neuter, Nominative = "подразделение", NominativePlural = "подразделения")]
+public class Division : PropertyChangedBase, IDomainObject, IValidatableObject {
 	public virtual int Id { get; set; }
 
 	string name = "";
 	[Display(Name = "Название")]
-	[Required(ErrorMessage = "Заполните название")]
-	[StringLength(255, ErrorMessage = "Название должно быть не длиннее 255 символов")]
+	[RequiredField]
+	[MaxText(255)]
 	public virtual string Name { get => name; set => SetField(ref name, value); }
 
-	int? parentDivisionId;
+	Division? parentDivision;
 	[Display(Name = "Головное подразделение")]
-	public virtual int? ParentDivisionId { get => parentDivisionId; set => SetField(ref parentDivisionId, value); }
+	public virtual Division? ParentDivision { get => parentDivision; set => SetField(ref parentDivision, value); }
 
 	public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext) {
-		if(Id != 0 && ParentDivisionId == Id)
-			yield return new ValidationResult("подразделение не может быть родителем самому себе", new[] { nameof(ParentDivisionId) });
+		if(Id != 0 && ParentDivision?.Id == Id)
+			yield return new ValidationResult("подразделение не может быть родителем самому себе", new[] { nameof(ParentDivision) });
 	}
-}
-
-public class DivisionRow : IReferenceRow {
-	public int Id { get; set; }
-	public string Name { get; set; } = "";
-	public string? ParentName { get; set; }
 }

@@ -13,14 +13,14 @@ public class TaxRegimeType : IUserType {
 	public bool IsMutable => false;
 
 	public object NullSafeGet(DbDataReader rs, string[] names, ISessionImplementor session, object owner) {
-		int index = rs.GetOrdinal(names[0]);
-		if(rs.IsDBNull(index))
-			return TaxRegime.Vat;
-		return Enum.Parse<TaxRegime>(Convert.ToString(rs.GetValue(index))!, ignoreCase: true);
+		var stored = (string?)NHibernateUtil.String.NullSafeGet(rs, names[0], session)
+			?? throw new InvalidOperationException($"Налоговый режим не заполнен в базе, колонка \"{names[0]}\"");
+
+		return Enum.Parse<TaxRegime>(stored, ignoreCase: true);
 	}
 
 	public void NullSafeSet(DbCommand cmd, object value, int index, ISessionImplementor session) {
-		var regime = value is TaxRegime r ? r : TaxRegime.Vat;
+		var regime = (TaxRegime)(value ?? throw new ArgumentNullException(nameof(value)));
 		NHibernateUtil.String.NullSafeSet(cmd, regime.ToString().ToLowerInvariant(), index, session);
 	}
 

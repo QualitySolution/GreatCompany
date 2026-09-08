@@ -1,22 +1,49 @@
-using GreatCompany.Data;
-using GreatCompany.Data.Models;
+﻿using GreatCompany.Data.Models;
 using GreatCompany.ViewModels.Reference;
-using QS.Dialog;
+using NHibernate;
+using NHibernate.SqlCommand;
+using NHibernate.Transform;
+using QS.DomainModel.NotifyChange;
+using QS.DomainModel.UoW;
+using QS.Journal;
 using QS.Navigation;
+using QS.Permissions;
+using QS.Project.Services;
 
 namespace GreatCompany.Journal.ViewModels.Reference;
 
-public class ProjectJournalViewModel : ReferenceJournalViewModelBase<ProjectRow> {
-	readonly Repository repo;
-
-	public ProjectJournalViewModel(Repository repo, INavigationManager navigation, IInteractiveMessage interactive) : base(navigation, interactive) {
-		this.repo = repo;
-		Title = "Проекты";
-		Reload();
+public class ProjectJournalViewModel : EntityJournalViewModelBase<Project, ProjectViewModel, ProjectJournalNode> {
+	public ProjectJournalViewModel(
+		IUnitOfWorkFactory unitOfWorkFactory,
+		INavigationManager navigationManager,
+		IEntityChangeWatcher changeWatcher,
+		IDeleteEntityService? deleteEntityService = null,
+		ICurrentPermissionService? currentPermissionService = null)
+		: base(unitOfWorkFactory, navigationManager, changeWatcher, deleteEntityService, currentPermissionService) {
 	}
 
-	protected override IEnumerable<ProjectRow> Load(string search) => repo.Projects(search);
-	protected override void Create() => OpenCard<ProjectViewModel>(0);
-	protected override void Edit(ProjectRow row) => OpenCard<ProjectViewModel>(row.Id);
-	protected override void Delete(ProjectRow row) { if(repo.Delete<Project>(row.Id)) Reload(); else NotifyDeleteBlocked(); }
+	protected override IQueryOver<Project> ItemsQuery(IUnitOfWork uow) {
+		Project projectAlias = null!;
+		Division divisionAlias = null!;
+		ProjectJournalNode resultAlias = null!;
+
+		return uow.Session.QueryOver(() => projectAlias)
+			.JoinAlias(() => projectAlias.Division, () => divisionAlias, JoinType.LeftOuterJoin)
+			.Where(GetSearchCriterion(
+				() => projectAlias.Id,
+				() => projectAlias.Name,
+				() => divisionAlias.Name))
+			.SelectList(list => list
+				.Select(() => projectAlias.Id).WithAlias(() => resultAlias.Id)
+				.Select(() => projectAlias.Name).WithAlias(() => resultAlias.Name)
+				.Select(() => divisionAlias.Name).WithAlias(() => resultAlias.DivisionName))
+			.OrderBy(() => projectAlias.Name).Asc
+			.TransformUsing(Transformers.AliasToBean<ProjectJournalNode>());
+	}
+}
+
+public class ProjectJournalNode {
+	public int Id { get; set; }
+	public string Name { get; set; } = "";
+	public string? DivisionName { get; set; }
 }

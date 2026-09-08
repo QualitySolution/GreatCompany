@@ -1,37 +1,29 @@
-using System.Reactive;
-using GreatCompany.Data;
 using GreatCompany.Data.Models;
-using GreatCompany.Journal.ViewModels.Templates;
-using GreatCompany.Navigation;
 using GreatCompany.ViewModels.CashFlow;
-using QS.Dialog;
+using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.SqlCommand;
+using QS.DomainModel.NotifyChange;
+using QS.DomainModel.UoW;
 using QS.Navigation;
-using ReactiveUI;
+using QS.Permissions;
+using QS.Project.Services;
 
 namespace GreatCompany.Journal.ViewModels.CashFlow;
 
-public class ActualIncomeJournalViewModel : JournalViewModelBase<ActualIncomeRow> {
-	readonly Repository repo;
-
-	public ActualIncomeJournalViewModel(Repository repo, INavigationManager navigation, IInteractiveMessage interactive) : base(navigation, interactive) {
-		this.repo = repo;
-		Title = "Факт - приход";
-		CreateFromTemplateCommand = ReactiveCommand.Create(CreateFromTemplate);
-		Reload();
+public class ActualIncomeJournalViewModel : IncomeJournalViewModelBase<ActualIncome, ActualIncomeViewModel> {
+	public ActualIncomeJournalViewModel(
+		IUnitOfWorkFactory unitOfWorkFactory,
+		INavigationManager navigationManager,
+		IEntityChangeWatcher changeWatcher,
+		IDeleteEntityService? deleteEntityService = null,
+		ICurrentPermissionService? currentPermissionService = null)
+		: base(unitOfWorkFactory, navigationManager, changeWatcher, deleteEntityService, currentPermissionService) {
 	}
 
-	public ReactiveCommand<Unit, Unit> CreateFromTemplateCommand { get; }
-
-	protected override IEnumerable<ActualIncomeRow> Load(string search) => repo.ActualIncomes(search);
-	protected override void Create() => OpenCard<ActualIncomeViewModel>(0);
-	protected override void Edit(ActualIncomeRow row) => OpenCard<ActualIncomeViewModel>(row.Id);
-	protected override void Delete(ActualIncomeRow row) { if(repo.Delete<ActualIncome>(row.Id)) Reload(); else NotifyDeleteBlocked(); }
-
-	void CreateFromTemplate() {
-		NavigationManager.OpenReferenceSelect<AccrualTemplateJournalViewModel>(this, template => {
-			var page = NavigationManager.OpenViewModel<ActualIncomeViewModel, int>(
-				this, 0, OpenPageOptions.IgnoreHash, card => card.ApplyTemplate(template.Id));
-			page.ViewModel.EntitySaved += (_, _) => Reload();
-		});
+	protected override IProjection PlannedIdProjection(IQueryOver<ActualIncome, ActualIncome> query) {
+		PlannedIncome plannedAlias = null!;
+		query.JoinAlias(x => x.PlannedIncome, () => plannedAlias, JoinType.LeftOuterJoin);
+		return Projections.Property(() => plannedAlias.Id);
 	}
 }

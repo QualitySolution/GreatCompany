@@ -1,62 +1,28 @@
-using GreatCompany.Controls;
-using GreatCompany.Data;
-using GreatCompany.Data.Models;
-using GreatCompany.Journal.ViewModels.Reference;
-using GreatCompany.Navigation;
-using QS.Dialog;
-using QS.DomainModel.Entity;
-using QS.Navigation;
-using QS.Validation;
+﻿using GreatCompany.Data.Models;
+using GreatCompany.Journal.ViewModels.CashFlow;
+using QS.DomainModel.UoW;
+using QS.Project.Domain;
+using QS.ViewModels.Control.EEVM;
 
 namespace GreatCompany.ViewModels.CashFlow;
 
-public class ActualIncomeViewModel : FormViewModelBase {
-	readonly Repository repo;
+public class ActualIncomeViewModel : IncomeCardViewModelBase<ActualIncome> {
+	public ActualIncomeViewModel(
+		IEntityUoWBuilder uowBuilder,
+		CardDependencies deps,
+		// Журнал открывает карточку по шаблону, передавая его номер
+		// при обычном создании 0
+		int templateId = 0)
+		: base(uowBuilder, deps) {
+		var builder = new CommonEEVMBuilderFactory<ActualIncome>(this, Entity, UoW, deps.Navigation, deps.Scope);
 
-	public ActualIncomeViewModel(int id, Repository repo, INavigationManager navigation, IValidator validator, IInteractiveMessage interactive)
-		: base(navigation, validator, interactive) {
-		this.repo = repo;
-		Entity = id == 0 ? new ActualIncome() : repo.Get<ActualIncome>(id) ?? new ActualIncome();
-		Title = Entity.Id == 0 ? "Новый факт прихода" : $"Факт прихода №{Entity.Id}";
+		PlannedIncomeEntry = builder.ForProperty(x => x.PlannedIncome)
+			.UseViewModelJournalAndAutocompleter<PlannedIncomeJournalViewModel>()
+			.UseViewModelDialog<PlannedIncomeViewModel>()
+			.Finish();
 
-		AccountPicker = new ReferencePickerViewModel(repo.References<Account>(), onChosen => NavigationManager.OpenReferenceSelect<AccountJournalViewModel>(this, onChosen));
-		ProjectPicker = new ReferencePickerViewModel(repo.References<Project>(), onChosen => NavigationManager.OpenReferenceSelect<ProjectJournalViewModel>(this, onChosen));
-		ArticlePicker = new ReferencePickerViewModel(repo.References<IncomeArticle>(), onChosen => NavigationManager.OpenReferenceSelect<IncomeArticleJournalViewModel>(this, onChosen));
-
-		AccountPicker.SelectById(Entity.AccountId);
-		ProjectPicker.SelectById(Entity.ProjectId);
-		ArticlePicker.SelectById(Entity.IncomeArticleId);
-
-		TrackChanges(Entity, AccountPicker, ProjectPicker, ArticlePicker);
+		FillFromTemplate(templateId);
 	}
 
-	public ActualIncome Entity { get; }
-	public ReferencePickerViewModel AccountPicker { get; }
-	public ReferencePickerViewModel ProjectPicker { get; }
-	public ReferencePickerViewModel ArticlePicker { get; }
-
-	public void ApplyTemplate(int templateId) {
-		var t = repo.Get<AccrualTemplate>(templateId);
-		if(t == null)
-			return;
-		Entity.Purpose = t.Purpose;
-		Entity.Amount = t.Amount;
-		Entity.VatAmount = t.VatAmount;
-		Entity.AccountId = t.AccountId;
-		Entity.ProjectId = t.ProjectId;
-		Entity.IncomeArticleId = t.IncomeArticleId;
-		AccountPicker.SelectById(t.AccountId);
-		ProjectPicker.SelectById(t.ProjectId);
-		ArticlePicker.SelectById(t.IncomeArticleId);
-	}
-
-	protected override IDomainObject? SaveEntity() {
-		Entity.AccountId = AccountPicker.Selected?.Id ?? 0;
-		Entity.ProjectId = ProjectPicker.Selected?.Id ?? 0;
-		Entity.IncomeArticleId = ArticlePicker.Selected?.Id ?? 0;
-		if(!Validate(Entity))
-			return null;
-		repo.Save(Entity);
-		return Entity;
-	}
+	public IEntityEntryViewModel PlannedIncomeEntry { get; }
 }

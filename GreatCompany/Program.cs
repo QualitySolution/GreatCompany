@@ -1,10 +1,12 @@
-using Avalonia;
+﻿using Avalonia;
 using GreatCompany.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QS.ErrorReporting;
 using QS.Launcher;
 using QS.Launcher.AppRunner;
 using QS.Project;
 using ReactiveUI.Avalonia;
+using System.Globalization;
 
 namespace GreatCompany;
 
@@ -13,9 +15,11 @@ public static class Program {
 
 	[STAThread]
 	public static void Main(string[] args) {
-		// Последний рубеж: всё, что нигде не перехватили, хотя бы попадает в лог
-		AppDomain.CurrentDomain.UnhandledException += (_, e) =>
-			logger.Fatal(e.ExceptionObject as Exception, "Необработанное исключение.");
+
+		// отправителя ставим позже — до входа в базу контейнера ещё нет
+		var crashReporting = new CrashReporting();
+		crashReporting.Subscribe();
+
 		TaskScheduler.UnobservedTaskException += (_, e) => {
 			logger.Error(e.Exception, "Необработанное исключение в фоновой задаче.");
 			e.SetObserved();
@@ -43,7 +47,7 @@ public static class Program {
 			};
 		}
 
-		BuildAvaloniaApp(startupServices, connectionString, login, sessionId, baseTitle)
+		BuildAvaloniaApp(startupServices, crashReporting, connectionString, login, sessionId, baseTitle)
 			.StartWithClassicDesktopLifetime(args);
 	}
 
@@ -72,11 +76,11 @@ public static class Program {
 
 	// Нужен дизайнеру Avalonia: он поднимает приложение без строки подключения и лончера
 	public static AppBuilder BuildAvaloniaApp()
-		=> BuildAvaloniaApp(null, null, null, null, null);
+		=> BuildAvaloniaApp(null, null, null, null, null, null);
 
-	public static AppBuilder BuildAvaloniaApp(IServiceProvider? startupServices,
+	public static AppBuilder BuildAvaloniaApp(IServiceProvider? startupServices, CrashReporting? crashReporting,
 		string? connectionString, string? login, string? sessionId, string? baseTitle)
-		=> AppBuilder.Configure(() => new GreatCompanyApp(startupServices, connectionString, login, sessionId, baseTitle))
+		=> AppBuilder.Configure(() => new GreatCompanyApp(startupServices, crashReporting, connectionString, login, sessionId, baseTitle))
 			.UsePlatformDetect()
 			.WithInterFont()
 			.LogToTrace()

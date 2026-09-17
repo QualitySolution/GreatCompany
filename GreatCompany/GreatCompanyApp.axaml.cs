@@ -1,4 +1,4 @@
-using Autofac;
+﻿using Autofac;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,16 +6,17 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
+using QS.Dialog;
+using QS.ErrorReporting;
 using QS.Launcher.AppRunner;
 using QS.Project.DB;
-using ReactiveUI;
-using System.Reactive;
 
 namespace GreatCompany;
 
 public partial class GreatCompanyApp : Application {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 	private readonly IServiceProvider? startupServices;
+	private readonly CrashReporting? crashReporting;
 	private readonly string? connectionString;
 	private readonly string? login;
 	private readonly string? sessionId;
@@ -23,12 +24,13 @@ public partial class GreatCompanyApp : Application {
 	private ILifetimeScope? mainContainer;
 	private bool isShuttingDown;
 
-	public GreatCompanyApp() : this(null, null, null, null, null) {
+	public GreatCompanyApp() : this(null, null, null, null, null, null) {
 	}
 
-	public GreatCompanyApp(IServiceProvider? startupServices,
+	public GreatCompanyApp(IServiceProvider? startupServices, CrashReporting? crashReporting,
 		string? connectionString, string? login, string? sessionId, string? baseTitle) {
 		this.startupServices = startupServices;
+		this.crashReporting = crashReporting;
 		this.connectionString = connectionString;
 		this.login = login;
 		this.sessionId = sessionId;
@@ -44,6 +46,11 @@ public partial class GreatCompanyApp : Application {
 			base.OnFrameworkInitializationCompleted();
 			return;
 		}
+
+		// Контейнера ещё нет, разбирать ошибку нечем — но перехват уже нужен: без него
+		// падение в фазе лончера или в сборке контейнера закрывает приложение молча
+		DispatcherExceptionHandler.Install();
+		RxAppExceptionHandler.Install();
 
 		if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 			desktop.Exit += (_, _) => DisposeApplicationServices();
@@ -99,17 +106,21 @@ public partial class GreatCompanyApp : Application {
 		if(string.IsNullOrWhiteSpace(connString))
 			throw new InvalidOperationException("Строка подключения не установлена.");
 
+		if(string.IsNullOrWhiteSpace(userLogin))
+			throw new InvalidOperationException("Логин пользователя не передан.");
+
 		var settings = new DatabaseConnectionSettings(new MySqlConnectionStringBuilder(connString));
 		mainContainer?.Dispose(); // вход из лончера повторный: контейнер прошлого сеанса больше не нужен
 		mainContainer = CompositionRoot.BuildContainer(
-			settings, userLogin ?? string.Empty, userSessionId ?? string.Empty);
+			settings, userLogin, userSessionId ?? string.Empty);
 
-		// Исключение в ReactiveCommand по умолчанию роняет приложение — вместо этого лог + сообщение
-		var interactiveMessage = mainContainer.Resolve<QS.Dialog.IInteractiveMessage>();
-		RxApp.DefaultExceptionHandler = Observer.Create<Exception>(ex => {
-			logger.Error(ex, "Необработанная ошибка в команде интерфейса.");
-			interactiveMessage.ShowMessage(QS.Dialog.ImportanceLevel.Error, ex.Message, "Ошибка");
-		});
+		var errorHandling = mainContainer.Resolve<IErrorHandlingService>();
+		DispatcherExceptionHandler.Install(errorHandling);
+		RxAppExceptionHandler.Install(errorHandling);
+		if(crashReporting != null) {
+			crashReporting.Reporter = mainContainer.Resolve<IErrorReporter>();
+			crashReporting.Settings = mainContainer.Resolve<IErrorReportingSettings>();
+		}
 
 		DataTemplates.Add(mainContainer.Resolve<QS.Navigation.IAvaloniaViewResolver>());
 

@@ -32,6 +32,13 @@
         <Style Selector="fa|NavigationViewItem fa|NavigationViewItem">
             <Setter Property="Margin" Value="-20,0,0,0" />
         </Style>
+
+        <!-- В свёрнутом меню дочерние пункты переезжают во всплывающую панель справа.
+             Отрицательный отступ выше уводил бы их за левый край панели, а сама панель
+             мерилась бы на 20 пикселей уже содержимого — значки и текст обрезались -->
+        <Style Selector="FlyoutPresenter fa|NavigationViewItem">
+            <Setter Property="Margin" Value="0" />
+        </Style>
     </Window.Styles>
     <fa:NavigationView x:Name="navigationView"
                        Background="#034F42"
@@ -40,13 +47,8 @@
                        OpenPaneLength="260"
                        PaneDisplayMode="Left"
                        PaneTitle="Великая компания"
-                       SelectionChanged="OnNavViewSelectionChanged">
+                       ItemInvoked="OnNavViewItemInvoked">
         <fa:NavigationView.MenuItems>
-            <fa:NavigationViewItem x:Name="mainMenuItem" Content="Главная">
-                <fa:NavigationViewItem.IconSource>
-                    <fi:FluentIconSource Icon="Home" />
-                </fa:NavigationViewItem.IconSource>
-            </fa:NavigationViewItem>
             <fa:NavigationViewItem x:Name="cashFlowMenuItem" Content="Денежные потоки">
                 <fa:NavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="BuildingRetailMoney" />
@@ -101,7 +103,7 @@
                             <fi:FluentIconSource Icon="Box" />
                         </fa:NavigationViewItem.IconSource>
                     </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="подразделения">
+                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="Подразделения">
                         <fa:NavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="PeopleTeam" />
                         </fa:NavigationViewItem.IconSource>

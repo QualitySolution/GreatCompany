@@ -4,13 +4,12 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
 using QS.Project.Domain;
-using QS.Tdi;
 using QS.ViewModels.Dialog;
 using ReactiveUI;
 
 namespace GreatCompany.ViewModels;
 
-public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEntity>, IHasChanges, ISaveable
+public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEntity>
 	where TEntity : class, IDomainObject, new() {
 	protected CardDependencies Deps { get; }
 
@@ -31,18 +30,13 @@ public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEn
 	public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 	public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
-	public event EventHandler<EntitySavedEventArgs>? EntitySaved;
-
 	public override bool Save() {
 		if(!base.Save())
 			return false;
 
 		HasChanges = false;
-		EntitySaved?.Invoke(this, new EntitySavedEventArgs(Entity));
 		return true;
 	}
-
-	void ISaveable.SaveAndClose() => SaveAndClose();
 
 	protected override bool Validate() {
 		if(base.Validate())

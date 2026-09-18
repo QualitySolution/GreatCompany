@@ -80,4 +80,6 @@ public class IncomeJournalNode {
 	public string? ProjectName { get; set; }
 	public string? ArticleName { get; set; }
 	public int? PlannedId { get; set; }
+
+	public string Title => $"{Purpose} от {Date:dd.MM.yyyy}";
 }

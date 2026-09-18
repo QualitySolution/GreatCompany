@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using FluentNHibernate.Conventions;
 using GreatCompany.Data;
 using GreatCompany.Data.Mappings;
@@ -76,9 +76,8 @@ internal static class DependencyInjection {
 
 		builder.Register<IAvaloniaViewResolver>(ctx =>
 			new AvaloniaRegisteredViewResolver(
-					ctx.Resolve<AvaloniaViewFactory>(),
-					ctx.Resolve<AvaloniaViewResolver>()
-				)
+				ctx.Resolve<AvaloniaViewFactory>(),
+				ctx.Resolve<AvaloniaViewResolver>())
 				// Общие вью журнала сопоставляем явно. Таблицу к журналу подбирает уже сам JournalView — по суффиксу GridView
 				.RegisterView<IJournalViewModel, JournalView>()
 				.RegisterView<SearchViewModel, SearchView>()

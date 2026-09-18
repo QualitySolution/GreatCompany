@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
 using GreatCompany.Journal.ViewModels.CashFlow;
 using GreatCompany.Journal.ViewModels.Reference;

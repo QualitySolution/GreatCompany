@@ -42,10 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="NLog.config">
+    <None Update="changes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="changes.txt">
+    <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

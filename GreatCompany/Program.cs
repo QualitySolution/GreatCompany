@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using GreatCompany.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QS.ErrorReporting;
@@ -6,7 +6,6 @@ using QS.Launcher;
 using QS.Launcher.AppRunner;
 using QS.Project;
 using ReactiveUI.Avalonia;
-using System.Globalization;
 
 namespace GreatCompany;
 
@@ -15,7 +14,6 @@ public static class Program {
 
 	[STAThread]
 	public static void Main(string[] args) {
-
 		// отправителя ставим позже — до входа в базу контейнера ещё нет
 		var crashReporting = new CrashReporting();
 		crashReporting.Subscribe();

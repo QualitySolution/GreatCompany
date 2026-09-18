@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -14,7 +14,6 @@ using QS.Project.DB;
 namespace GreatCompany;
 
 public partial class GreatCompanyApp : Application {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 	private readonly IServiceProvider? startupServices;
 	private readonly CrashReporting? crashReporting;
 	private readonly string? connectionString;

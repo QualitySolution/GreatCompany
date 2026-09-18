@@ -87,9 +87,7 @@ internal static class DependencyInjection {
 
 		builder.Register(ctx => {
 			var contextCopy = ctx.Resolve<IComponentContext>();
-			return new AvaloniaViewFactory(
-				() => contextCopy.Resolve<IAvaloniaViewResolver>(),
-				serviceType => contextCopy.ResolveOptional(serviceType));
+			return new AvaloniaViewFactory(() => contextCopy.Resolve<IAvaloniaViewResolver>());
 		}).AsSelf().SingleInstance();
 
 		builder.RegisterType<MainWindow>();

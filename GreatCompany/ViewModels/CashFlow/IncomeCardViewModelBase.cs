@@ -8,7 +8,7 @@ using QS.ViewModels.Control.EEVM;
 
 namespace GreatCompany.ViewModels.CashFlow;
 
-/// <summary>Карточка прихода: у шаблона начисления, плана и факта одни и те же поля выбора.</summary>
+/// <summary>карточка прихода, у шаблона начисления, плана и факта одни и те же поля выбора</summary>
 public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEntity>
 	where TEntity : IncomeDocument, new() {
 
@@ -37,8 +37,8 @@ public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEnti
 	public IEntityEntryViewModel IncomeArticleEntry { get; }
 
 	/// <summary>
-	/// Заполняет карточку по шаблону начисления,
-	/// 0 — обычное создание, с нуля
+	/// заполняет карточку по шаблону начисления.
+	/// 0 - обычное создание с нуля
 	/// </summary>
 	protected void FillFromTemplate(int templateId) {
 		if(templateId == 0)
@@ -46,7 +46,7 @@ public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEnti
 
 		var template = UoW.GetById<AccrualTemplate>(templateId)
 			?? throw new AbortCreatingPageException(
-				$"Шаблон начисления №{templateId} не найден, возможно его удалили", "Не удалось создать по шаблону");
+				$"Шаблон начисления №{templateId} не найден, возможно его удалили.", "Не удалось создать по шаблону");
 
 		Entity.FillFrom(template);
 	}

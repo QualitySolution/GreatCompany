@@ -62,7 +62,7 @@ public static class Program {
 		Environment.SetEnvironmentVariable("QS_BaseTitle", null, EnvironmentVariableTarget.Process);
 	}
 
-	// Нужен дизайнеру Avalonia: он поднимает приложение без строки подключения и лончера
+	// нужен дизайнеру Avalonia, он поднимает приложение без строки подключения и лончера
 	public static AppBuilder BuildAvaloniaApp()
 		=> BuildAvaloniaApp(null, null, null, null, null, null);
 

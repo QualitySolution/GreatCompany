@@ -7,7 +7,7 @@ using QS.Validation;
 
 namespace GreatCompany.ViewModels;
 
-// Зависимости, одинаковые у всех карточек
+// зависимости, одинаковые у всех карточек
 public record CardDependencies(
 	IUnitOfWork UnitOfWork,
 	INavigationManager Navigation,

@@ -13,7 +13,8 @@ using QS.Project.DB;
 namespace GreatCompany.Data.Mappings;
 
 /// <summary>
-/// Маппинг сущностей выводится из их имён - свойство → колонка, ссылка → колонка с суффиксом _id
+/// маппинг сущностей выводится из их имён, свойство даёт колонку, ссылка - колонку с суффиксом _id.
+/// руками задаются только отклонения
 /// </summary>
 public class EntityAutoMapping : IDatabaseConfigurationExposer {
 	public void ExposeConfiguration(NHibernate.Cfg.Configuration config) => CreateModel().Configure(config);
@@ -32,9 +33,9 @@ public class EntityAutoMapping : IDatabaseConfigurationExposer {
 		"enum(" + String.Join(",", Enum.GetNames<TEnum>().Select(name => $"'{name.ToLowerInvariant()}'")) + ")";
 
 	/// <summary>
-	/// сохраняем доменные объекты из Models
-	/// без сеттера свойства — нет
-	/// Абстрактные предки сущностью не становятся, раскладыватся в свойства по таблицам наследников
+	/// сохраняем доменные объекты из Models.
+	/// свойства без сеттера не сохраняются.
+	/// абстрактные предки сущностью не становятся, их свойства раскладываются по таблицам наследников
 	/// </summary>
 	private sealed class DomainEntities : DefaultAutomappingConfiguration {
 		public override bool ShouldMap(Type type) => base.ShouldMap(type)
@@ -65,9 +66,9 @@ public class EntityAutoMapping : IDatabaseConfigurationExposer {
 		}
 
 		/// <summary>
-		/// строка с ограничением длины ([MaxText] или [StringLength]) — varchar(n)
-		/// без ограничения — text
-		/// деньги — decimal(19,2)
+		/// строка с ограничением длины через MaxText или StringLength - varchar(n).
+		/// строка без ограничения - text.
+		/// деньги - decimal(19,2)
 		/// </summary>
 		private static void ApplyColumnType(IPropertyInstance instance) {
 			var propertyType = instance.Property.PropertyType;

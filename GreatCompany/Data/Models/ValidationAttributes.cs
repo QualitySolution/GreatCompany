@@ -3,7 +3,7 @@
 namespace GreatCompany.Data.Models;
 
 /// <summary>
-/// Обязательное свойство
+/// обязательное свойство
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class RequiredFieldAttribute : RequiredAttribute {
@@ -11,7 +11,7 @@ public sealed class RequiredFieldAttribute : RequiredAttribute {
 }
 
 /// <summary>
-/// Ограничение длины строки
+/// ограничение длины строки
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class MaxTextAttribute : StringLengthAttribute {

@@ -8,6 +8,6 @@ public class AccountViewModel : CardViewModelBase<Account> {
 		: base(uowBuilder, deps) {
 	}
 
-	// Карточка биндится на Entity.TaxRegime напрямую, здесь только список
+	// карточка биндится на Entity.TaxRegime напрямую, здесь только список
 	public IReadOnlyList<TaxRegime> TaxRegimeOptions { get; } = Enum.GetValues<TaxRegime>();
 }

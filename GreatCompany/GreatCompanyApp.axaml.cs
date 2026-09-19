@@ -46,8 +46,8 @@ public partial class GreatCompanyApp : Application {
 			return;
 		}
 
-		// Контейнера ещё нет, разбирать ошибку нечем — но перехват уже нужен: без него
-		// падение в фазе лончера или в сборке контейнера закрывает приложение молча
+		// контейнера ещё нет и разбирать ошибку нечем, но перехват нужен уже сейчас.
+		// без него падение в лончере или при сборке контейнера молча закрывает приложение
 		DispatcherExceptionHandler.Install();
 		RxAppExceptionHandler.Install();
 
@@ -103,7 +103,7 @@ public partial class GreatCompanyApp : Application {
 			throw new InvalidOperationException("Логин пользователя не передан.");
 
 		var settings = new DatabaseConnectionSettings(new MySqlConnectionStringBuilder(connString));
-		mainContainer?.Dispose(); // вход из лончера повторный: контейнер прошлого сеанса больше не нужен
+		mainContainer?.Dispose();
 		mainContainer = CompositionRoot.BuildContainer(
 			settings, userLogin, userSessionId ?? string.Empty);
 
@@ -117,7 +117,7 @@ public partial class GreatCompanyApp : Application {
 
 		DataTemplates.Add(mainContainer.Resolve<QS.Navigation.IAvaloniaViewResolver>());
 
-		// Параметры окна — только именованными: три строковых подряд Autofac по типу не различит
+		// параметры окна передаём только по имени, три строки подряд Autofac по типу не различит
 		return mainContainer.Resolve<MainWindow>(
 			new NamedParameter("login", userLogin),
 			new NamedParameter("sessionId", userSessionId),
@@ -137,7 +137,7 @@ public partial class GreatCompanyApp : Application {
 		desktop.Shutdown();
 	}
 
-	// Сервисы лончера освобождает Program — он их и создал
+	// сервисы лончера освобождает Program, он их и создал
 	private void DisposeApplicationServices() {
 		mainContainer?.Dispose();
 		mainContainer = null;

@@ -4,7 +4,7 @@ using Avalonia.Controls;
 
 namespace GreatCompany.Views;
 
-/// <summary>Кнопки внизу карточки</summary>
+/// <summary>кнопки внизу карточки</summary>
 public partial class CardButtons : UserControl {
 	public static readonly StyledProperty<ICommand?> SaveProperty =
 		AvaloniaProperty.Register<CardButtons, ICommand?>(nameof(Save));

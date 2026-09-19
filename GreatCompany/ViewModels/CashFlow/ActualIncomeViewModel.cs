@@ -10,7 +10,7 @@ public class ActualIncomeViewModel : IncomeCardViewModelBase<ActualIncome> {
 	public ActualIncomeViewModel(
 		IEntityUoWBuilder uowBuilder,
 		CardDependencies deps,
-		// Журнал открывает карточку по шаблону, передавая его номер
+		// журнал открывает карточку по шаблону и передаёт его номер.
 		// при обычном создании 0
 		int templateId = 0)
 		: base(uowBuilder, deps) {

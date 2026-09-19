@@ -67,15 +67,15 @@ public partial class MainWindow : Window {
 		menuItemsByViewModel.Add(typeof(TViewModel), item);
 	}
 
-	// Слушаем именно клик, а не смену выбора: закрытие вкладки не снимает выделение с пункта меню,
-	// и по SelectionChanged повторно открыть тот же журнал было бы нельзя — выбор не меняется
+	// слушаем клик, а не смену выбора, потому что закрытие вкладки не снимает выделение с пункта меню.
+	// по SelectionChanged тот же журнал повторно не открыть, выбор не меняется
 	private void OnNavViewItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e) {
 		if(e.InvokedItemContainer is NavigationViewItem item && menuItems.TryGetValue(item, out var action))
 			action();
 	}
 
-	// Вкладку переключают и мышью по самой вкладке, и её закрытием. Без этого в меню
-	// продолжает гореть пункт журнала, который уже не показан
+	// вкладку переключают и мышью по самой вкладке, и её закрытием.
+	// без этого в меню продолжает гореть пункт журнала, который уже не показан
 	private void OnNavigationPropertyChanged(object? sender, PropertyChangedEventArgs e) {
 		if(e.PropertyName != nameof(AvaloniaNavigationManager.CurrentPage))
 			return;
@@ -92,13 +92,13 @@ public partial class MainWindow : Window {
 		if(navigationManager == null)
 			return;
 
-		// обходим по снимку: закрытие вкладки меняет саму коллекцию Pages
+		// обходим по снимку, закрытие вкладки меняет саму коллекцию Pages
 		foreach(var page in navigationManager.Pages.ToList()) {
 			// подчинённую вкладку уже закрыла вместе с собой хозяйская
 			if(!navigationManager.Pages.Contains(page) || navigationManager.AskClosePage(page, CloseSource.AppQuit))
 				continue;
 
-			// пользователь отменил закрытие вкладки с несохраненными изменениями — не выходим
+			// пользователь отменил закрытие вкладки с несохранёнными изменениями, не выходим
 			e.Cancel = true;
 			return;
 		}

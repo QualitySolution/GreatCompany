@@ -4,7 +4,9 @@ using QS.Deletion.Configuration;
 namespace GreatCompany.Data;
 
 /// <summary>
-/// Обязательная ссылка означает удаление зависимого документа, необязательная — очистку ссылки
+/// обязательная ссылка означает удаление зависимого документа, необязательная - очистку ссылки.
+/// расход всегда принадлежит подразделению и удаляется вместе с ним.
+/// проект перечислен раньше документов, план раньше факта - ссылка у документа очищается до его удаления
 /// </summary>
 public static class DeletionConfiguration {
 	public static void ConfigureDeletion(DeleteConfiguration configuration) {
@@ -41,7 +43,7 @@ public static class DeletionConfiguration {
 			.AddDeleteDependence<ActualExpense>(x => x.ExpenseArticle)
 			.AddDeleteDependence<PaymentTemplate>(x => x.ExpenseArticle);
 
-		// Факт живёт своей жизнью: удаление плана только рвёт связь
+		// факт живёт своей жизнью, удаление плана только рвёт связь
 		configuration.AddHibernateDeleteInfo<PlannedIncome>()
 			.AddClearDependence<ActualIncome>(x => x.PlannedIncome);
 

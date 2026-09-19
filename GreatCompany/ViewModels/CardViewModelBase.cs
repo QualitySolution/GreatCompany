@@ -24,7 +24,7 @@ public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEn
 			entity.PropertyChanged += (_, _) => HasChanges = true;
 	}
 
-	// В библиотечном диалоге Entity — поле, а вьюхи биндятся на свойства
+	// в библиотечном диалоге Entity - поле, а вьюхи биндятся на свойства
 	public new TEntity Entity => base.Entity;
 
 	public ReactiveCommand<Unit, Unit> SaveCommand { get; }

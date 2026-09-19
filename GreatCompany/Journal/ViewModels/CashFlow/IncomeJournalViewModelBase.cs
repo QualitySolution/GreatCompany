@@ -63,9 +63,8 @@ public abstract class IncomeJournalViewModelBase<TEntity, TEntityViewModel>
 	}
 
 	/// <summary>
-	/// Ссылка на план есть только у факта, поэтому джойн к ней добавляет наследник
-	/// и возвращает проекцию номера плана
-	/// У плана ссылки нет
+	/// ссылка на план есть только у факта, поэтому джойн к ней добавляет наследник и возвращает проекцию номера плана.
+	/// у плана ссылки нет
 	/// </summary>
 	protected virtual IProjection? PlannedIdProjection(IQueryOver<TEntity, TEntity> query) => null;
 }

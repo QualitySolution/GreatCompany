@@ -8,7 +8,7 @@ using QS.ViewModels.Control.EEVM;
 
 namespace GreatCompany.ViewModels.CashFlow;
 
-/// <summary>Карточка расхода: у шаблона платежа, плана и факта одни и те же поля выбора.</summary>
+/// <summary>карточка расхода, у шаблона платежа, плана и факта одни и те же поля выбора</summary>
 public abstract class ExpenseCardViewModelBase<TEntity> : CardViewModelBase<TEntity>
 	where TEntity : ExpenseDocument, new() {
 
@@ -43,8 +43,8 @@ public abstract class ExpenseCardViewModelBase<TEntity> : CardViewModelBase<TEnt
 	public IEntityEntryViewModel DivisionEntry { get; }
 
 	/// <summary>
-	/// Заполняет карточку по шаблону начисления,
-	/// 0 — обычное создание, с нуля
+	/// заполняет карточку по шаблону платежа.
+	/// 0 - обычное создание с нуля
 	/// </summary>
 	protected void FillFromTemplate(int templateId) {
 		if(templateId == 0)

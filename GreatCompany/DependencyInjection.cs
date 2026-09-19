@@ -78,7 +78,8 @@ internal static class DependencyInjection {
 			new AvaloniaRegisteredViewResolver(
 				ctx.Resolve<AvaloniaViewFactory>(),
 				ctx.Resolve<AvaloniaViewResolver>())
-				// Общие вью журнала сопоставляем явно. Таблицу к журналу подбирает уже сам JournalView — по суффиксу GridView
+				// общие вью журнала сопоставляем явно.
+				// таблицу к журналу JournalView подбирает сам по суффиксу GridView
 				.RegisterView<IJournalViewModel, JournalView>()
 				.RegisterView<SearchViewModel, SearchView>()
 				.RegisterView<IButtonJournalActionsViewModel, ButtonJournalActionsView>()
@@ -126,11 +127,11 @@ internal static class DependencyInjection {
 		builder.Register(_ => new ErrorReportingSettings(true, false, true, 300)).As<IErrorReportingSettings>().SingleInstance();
 #endif
 
-		// Кто именно поймал ошибку
+		// кто именно поймал ошибку
 		builder.Register(ctx => ctx.Resolve<IUserService>().GetCurrentUser()).As<IUserInfo>().SingleInstance();
 
 		// разбор останавливается на первом обработчике, вернувшем true
-		// MySqlExceptionErrorNumberLogger всегда возвращает false — он только пишет номера ошибок MySQL в лог
+		// MySqlExceptionErrorNumberLogger всегда возвращает false, он только пишет номера ошибок MySQL в лог
 		builder.RegisterType<MySqlExceptionErrorNumberLogger>().As<IErrorHandler>();
 		builder.RegisterType<ConnectionIsLost>().As<IErrorHandler>();
 		builder.RegisterType<MySqlExceptionAccessDenied>().As<IErrorHandler>();

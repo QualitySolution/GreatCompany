@@ -63,13 +63,9 @@ public partial class MainWindow : Window {
 	}
 
 	private void RegMenuItem<TViewModel>(NavigationViewItem item) where TViewModel : class, IDialogViewModel {
-		menuItems.Add(item, Open<TViewModel>);
+		menuItems.Add(item, () => navigationManager?.OpenViewModel<TViewModel>(null));
 		menuItemsByViewModel.Add(typeof(TViewModel), item);
 	}
-
-	// Открывает вкладку; если она уже открыта, навигация сама переключается на неё
-	private void Open<TViewModel>() where TViewModel : class, IDialogViewModel =>
-		navigationManager?.OpenViewModel<TViewModel>(null);
 
 	// Слушаем именно клик, а не смену выбора: закрытие вкладки не снимает выделение с пункта меню,
 	// и по SelectionChanged повторно открыть тот же журнал было бы нельзя — выбор не меняется
@@ -98,7 +94,8 @@ public partial class MainWindow : Window {
 
 		// обходим по снимку: закрытие вкладки меняет саму коллекцию Pages
 		foreach(var page in navigationManager.Pages.ToList()) {
-			if(navigationManager.AskClosePage(page, CloseSource.AppQuit))
+			// подчинённую вкладку уже закрыла вместе с собой хозяйская
+			if(!navigationManager.Pages.Contains(page) || navigationManager.AskClosePage(page, CloseSource.AppQuit))
 				continue;
 
 			// пользователь отменил закрытие вкладки с несохраненными изменениями — не выходим

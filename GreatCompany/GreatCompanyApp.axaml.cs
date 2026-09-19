@@ -72,29 +72,23 @@ public partial class GreatCompanyApp : Application {
 		var services = startupServices ?? throw new InvalidOperationException("Сервисы лончера не переданы.");
 		var launcherWindow = services.GetRequiredService<QS.Launcher.Views.MainWindow>();
 		var runner = services.GetRequiredService<InProcessRunner>();
-		var previousCallback = runner.OnLogin;
-		var loginAccepted = false;
 
-		runner.OnLogin = response => {
-			previousCallback?.Invoke(response);
+		runner.OnLogin = response => Dispatcher.UIThread.Post(() => {
+			var mainWindow = CreateMainWindow(
+				response.ConnectionString,
+				response.Login,
+				response.Parameters.GetValueOrDefault("SessionId"),
+				response.Parameters.GetValueOrDefault("BaseTitle"));
 
-			loginAccepted = true;
-			Dispatcher.UIThread.Post(() => {
-				var mainWindow = CreateMainWindow(
-					response.ConnectionString,
-					response.Login,
-					response.Parameters.GetValueOrDefault("SessionId"),
-					response.Parameters.GetValueOrDefault("BaseTitle"));
+			SetupMainWindowLifetime(desktop, mainWindow);
+			desktop.MainWindow = mainWindow;
+			mainWindow.Show();
+			launcherWindow.Close();
+		});
 
-				SetupMainWindowLifetime(desktop, mainWindow);
-				desktop.MainWindow = mainWindow;
-				mainWindow.Show();
-				launcherWindow.Close();
-			});
-		};
-
+		// главного окна нет - вход не состоялся или окно не создалось, работать дальше нечему
 		launcherWindow.Closed += (_, _) => {
-			if(!loginAccepted)
+			if(desktop.MainWindow == null)
 				ShutdownApplication(desktop);
 		};
 

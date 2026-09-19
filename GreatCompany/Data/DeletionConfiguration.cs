@@ -11,9 +11,9 @@ public static class DeletionConfiguration {
 		configuration.AddHibernateDeleteInfo<Division>()
 			.AddDeleteDependence<Project>(x => x.Division)
 			.AddClearDependence<Division>(x => x.ParentDivision)
-			.AddClearDependence<PlannedExpense>(x => x.Division)
-			.AddClearDependence<ActualExpense>(x => x.Division)
-			.AddClearDependence<PaymentTemplate>(x => x.Division);
+			.AddDeleteDependence<PlannedExpense>(x => x.Division)
+			.AddDeleteDependence<ActualExpense>(x => x.Division)
+			.AddDeleteDependence<PaymentTemplate>(x => x.Division);
 
 		configuration.AddHibernateDeleteInfo<Project>()
 			.AddDeleteDependence<PlannedIncome>(x => x.Project)

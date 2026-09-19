@@ -9,23 +9,20 @@ public abstract class IncomeDocument : PropertyChangedBase, IDomainObject {
 	string purpose = "";
 	[Display(Name = "Назначение")]
 	[RequiredField]
-	public virtual string Purpose {
-		get => purpose;
-		set {
-			if(SetField(ref purpose, value))
-				OnPropertyChanged(nameof(Title));
-		}
-	}
+	[PropertyChangedAlso(nameof(Title))]
+	public virtual string Purpose { get => purpose; set => SetField(ref purpose, value); }
 
 	public virtual string Title => Purpose;
 
-	decimal amount;
+	decimal? amount = 0;
 	[Display(Name = "Сумма")]
-	public virtual decimal Amount { get => amount; set => SetField(ref amount, value); }
+	[RequiredField]
+	public virtual decimal? Amount { get => amount; set => SetField(ref amount, value); }
 
-	decimal vatAmount;
+	decimal? vatAmount = 0;
 	[Display(Name = "Сумма НДС")]
-	public virtual decimal VatAmount { get => vatAmount; set => SetField(ref vatAmount, value); }
+	[RequiredField]
+	public virtual decimal? VatAmount { get => vatAmount; set => SetField(ref vatAmount, value); }
 
 	Account account = null!;
 	[Display(Name = "Счёт")]

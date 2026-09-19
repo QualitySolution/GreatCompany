@@ -44,5 +44,5 @@ public abstract class CashFlowJournalViewModelBase<TEntity, TEntityViewModel, TN
 
 	private void TemplateSelected(object? sender, JournalSelectedEventArgs e) =>
 		NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder, int>(
-			this, EntityUoWBuilder.ForCreate(), e.SelectedObjects[0].GetId(), OpenPageOptions.IgnoreHash);
+			this, EntityUoWBuilder.ForCreate(), e.SelectedObjects[0].GetId());
 }

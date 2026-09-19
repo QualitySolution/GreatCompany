@@ -13,7 +13,8 @@ public class Account : PropertyChangedBase, IDomainObject {
 	[MaxText(255)]
 	public virtual string Name { get => name; set => SetField(ref name, value); }
 
-	TaxRegime taxRegime;
+	TaxRegime? taxRegime;
 	[Display(Name = "Налоговый режим")]
-	public virtual TaxRegime TaxRegime { get => taxRegime; set => SetField(ref taxRegime, value); }
+	[RequiredField]
+	public virtual TaxRegime? TaxRegime { get => taxRegime; set => SetField(ref taxRegime, value); }
 }

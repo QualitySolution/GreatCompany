@@ -3,29 +3,26 @@ using QS.DomainModel.Entity;
 
 namespace GreatCompany.Data.Models;
 
-public abstract class ExpenseDocument : PropertyChangedBase, IDomainObject, IValidatableObject {
+public abstract class ExpenseDocument : PropertyChangedBase, IDomainObject {
 	public virtual int Id { get; set; }
 
 	string purpose = "";
 	[Display(Name = "Назначение")]
 	[RequiredField]
-	public virtual string Purpose {
-		get => purpose;
-		set {
-			if(SetField(ref purpose, value))
-				OnPropertyChanged(nameof(Title));
-		}
-	}
+	[PropertyChangedAlso(nameof(Title))]
+	public virtual string Purpose { get => purpose; set => SetField(ref purpose, value); }
 
 	public virtual string Title => Purpose;
 
-	decimal amount;
+	decimal? amount = 0;
 	[Display(Name = "Сумма")]
-	public virtual decimal Amount { get => amount; set => SetField(ref amount, value); }
+	[RequiredField]
+	public virtual decimal? Amount { get => amount; set => SetField(ref amount, value); }
 
-	decimal vatAmount;
+	decimal? vatAmount = 0;
 	[Display(Name = "Сумма НДС")]
-	public virtual decimal VatAmount { get => vatAmount; set => SetField(ref vatAmount, value); }
+	[RequiredField]
+	public virtual decimal? VatAmount { get => vatAmount; set => SetField(ref vatAmount, value); }
 
 	Account account = null!;
 	[Display(Name = "Счёт")]
@@ -34,13 +31,14 @@ public abstract class ExpenseDocument : PropertyChangedBase, IDomainObject, IVal
 
 	Division? division;
 	[Display(Name = "Подразделение")]
+	[RequiredField]
 	public virtual Division? Division { get => division; set => SetField(ref division, value); }
 
 	Project? project;
 	[Display(Name = "Проект")]
 	public virtual Project? Project {
 		get => project;
-		// Расход по проекту всегда относится к подразделению этого проекта
+		// при выборе проекта подставляем его подразделение, поменять его после можно
 		set {
 			if(SetField(ref project, value) && value != null)
 				Division = value.Division;
@@ -52,12 +50,6 @@ public abstract class ExpenseDocument : PropertyChangedBase, IDomainObject, IVal
 	[RequiredField]
 	public virtual ExpenseArticle ExpenseArticle { get => expenseArticle; set => SetField(ref expenseArticle, value); }
 
-	// Подразделение обязательно или берётся из проекта
-	public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext) {
-		if(Division == null && Project == null)
-			yield return new ValidationResult("Укажите подразделение или проект", new[] { nameof(Division), nameof(Project) });
-	}
-
 	public virtual void FillFrom(ExpenseDocument source) {
 		Purpose = source.Purpose;
 		Amount = source.Amount;
@@ -65,7 +57,6 @@ public abstract class ExpenseDocument : PropertyChangedBase, IDomainObject, IVal
 		Account = source.Account;
 		ExpenseArticle = source.ExpenseArticle;
 		Project = source.Project;
-		if(source.Project == null)
-			Division = source.Division;
+		Division = source.Division;
 	}
 }

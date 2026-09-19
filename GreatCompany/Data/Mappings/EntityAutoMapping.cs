@@ -15,7 +15,6 @@ namespace GreatCompany.Data.Mappings;
 /// <summary>
 /// Маппинг сущностей выводится из их имён - свойство → колонка, ссылка → колонка с суффиксом _id
 /// </summary>
-// Руками задаются только отклонения
 public class EntityAutoMapping : IDatabaseConfigurationExposer {
 	public void ExposeConfiguration(NHibernate.Cfg.Configuration config) => CreateModel().Configure(config);
 
@@ -55,10 +54,15 @@ public class EntityAutoMapping : IDatabaseConfigurationExposer {
 
 		public void Apply(IPropertyInstance instance) {
 			instance.Column(ToSnakeCase(instance.Name));
+			// загрузка пишет в поле напрямую, логика сеттеров при ней не срабатывает
+			instance.Access.CamelCaseField();
 			ApplyColumnType(instance);
 		}
 
-		public void Apply(IManyToOneInstance instance) => instance.Column(ToSnakeCase(instance.Name) + "_id");
+		public void Apply(IManyToOneInstance instance) {
+			instance.Column(ToSnakeCase(instance.Name) + "_id");
+			instance.Access.CamelCaseField();
+		}
 
 		/// <summary>
 		/// строка с ограничением длины ([MaxText] или [StringLength]) — varchar(n)

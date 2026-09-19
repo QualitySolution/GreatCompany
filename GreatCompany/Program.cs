@@ -3,7 +3,6 @@ using GreatCompany.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QS.ErrorReporting;
 using QS.Launcher;
-using QS.Launcher.AppRunner;
 using QS.Project;
 using ReactiveUI.Avalonia;
 
@@ -14,7 +13,9 @@ public static class Program {
 
 	[STAThread]
 	public static void Main(string[] args) {
-		// отправителя ставим позже — до входа в базу контейнера ещё нет
+		logger.Info("=== Старт приложения ===");
+
+		// отправителя отчёта задаём после входа в базу, до этого контейнера нет
 		var crashReporting = new CrashReporting();
 		crashReporting.Subscribe();
 
@@ -30,23 +31,12 @@ public static class Program {
 
 		ClearConnectionEnvironment();
 
-		var startLauncher = string.IsNullOrEmpty(connectionString);
-		// Сервисы лончера нужны все время работы приложения: окно входа может открыться повторно,
-		// поэтому освобождаем их только когда рабочий цикл Avalonia завершился
-		using var startupServices = ConfigureStartupServices(startLauncher);
-
-		if(startLauncher) {
-			var runner = startupServices.GetRequiredService<InProcessRunner>();
-			runner.OnLogin = response => {
-				login = response.Login;
-				sessionId = response.Parameters.GetValueOrDefault("SessionId");
-				connectionString = response.ConnectionString;
-				baseTitle = response.Parameters.GetValueOrDefault("BaseTitle");
-			};
-		}
+		// окно лончера создаётся из этих сервисов внутри рабочего цикла Avalonia, освобождаем после него
+		using var startupServices = ConfigureStartupServices(string.IsNullOrEmpty(connectionString));
 
 		BuildAvaloniaApp(startupServices, crashReporting, connectionString, login, sessionId, baseTitle)
 			.StartWithClassicDesktopLifetime(args);
+		logger.Info("=== Завершение приложения ===");
 	}
 
 	private static ServiceProvider ConfigureStartupServices(bool withLauncher) {

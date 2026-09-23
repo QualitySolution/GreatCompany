@@ -78,8 +78,8 @@ internal static class DependencyInjection {
 			new AvaloniaRegisteredViewResolver(
 				ctx.Resolve<AvaloniaViewFactory>(),
 				ctx.Resolve<AvaloniaViewResolver>())
-				// общие вью журнала сопоставляем явно.
-				// таблицу к журналу JournalView подбирает сам по суффиксу GridView
+				// Общие вью журнала сопоставляем явно.
+				// Таблицу к журналу JournalView подбирает сам по суффиксу GridView
 				.RegisterView<IJournalViewModel, JournalView>()
 				.RegisterView<SearchViewModel, SearchView>()
 				.RegisterView<IButtonJournalActionsViewModel, ButtonJournalActionsView>()
@@ -97,7 +97,7 @@ internal static class DependencyInjection {
 	}
 
 	/// <summary>
-	/// диалоги показывают дерево зависимостей, правила задаёт <see cref="DeletionConfiguration"/>.
+	/// Диалоги показывают дерево зависимостей, правила задаёт <see cref="DeletionConfiguration"/>.
 	/// </summary>
 	public static ContainerBuilder AddDeletion(this ContainerBuilder builder) {
 		builder.RegisterModule(new DeletionAutofacModule());
@@ -108,13 +108,11 @@ internal static class DependencyInjection {
 		}).AsSelf().SingleInstance();
 		builder.RegisterType<DeleteEntityGUIService>().As<IDeleteEntityService>().SingleInstance();
 
-		builder.RegisterDecorator<BackgroundDeleteEntityService, IDeleteEntityService>();
-
 		return builder;
 	}
 
 	/// <summary>
-	/// цепочку обработчиков проходит каждая непредвиденная ошибка, неопознанная попадает в отчёт
+	/// Цепочку обработчиков проходит каждая непредвиденная ошибка, неопознанная попадает в отчёт
 	/// </summary>
 	public static ContainerBuilder AddErrorReporting(this ContainerBuilder builder) {
 		builder.RegisterType<ErrorHandlingService>().As<IErrorHandlingService>().SingleInstance();

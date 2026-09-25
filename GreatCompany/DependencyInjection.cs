@@ -132,6 +132,7 @@ internal static class DependencyInjection {
 		// MySqlExceptionErrorNumberLogger всегда возвращает false, он только пишет номера ошибок MySQL в лог
 		builder.RegisterType<MySqlExceptionErrorNumberLogger>().As<IErrorHandler>();
 		builder.RegisterType<ConnectionIsLost>().As<IErrorHandler>();
+		builder.RegisterType<GrpcConnectionIsLost>().As<IErrorHandler>();
 		builder.RegisterType<MySqlExceptionAccessDenied>().As<IErrorHandler>();
 		builder.RegisterType<MySqlExceptionNoSpace>().As<IErrorHandler>();
 		builder.RegisterType<MySqlException1055OnlyFullGroupBy>().As<IErrorHandler>();

@@ -1,0 +1,20 @@
+<UserControl x:Class="GreatCompany.Journal.Views.CashFlow.PlannedExpenseJournalGridView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:journal="clr-namespace:GreatCompany.Journal.ViewModels.CashFlow"
+             x:DataType="journal:ExpenseJournalNode">
+    <DataGrid x:Name="dataGrid" IsReadOnly="True" AutoGenerateColumns="False"
+              GridLinesVisibility="All" CanUserResizeColumns="True" CanUserSortColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Код" Binding="{Binding Id, Mode=OneWay}" Width="60" CellStyleClasses="number" />
+            <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat=dd.MM.yyyy}" Width="95" />
+            <DataGridTextColumn Header="Назначение" Binding="{Binding Purpose, Mode=OneWay}" Width="3*" MinWidth="140" />
+            <DataGridTextColumn Header="Сумма" Binding="{Binding Amount, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
+            <DataGridTextColumn Header="НДС" Binding="{Binding VatAmount, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
+            <DataGridTextColumn Header="Счёт" Binding="{Binding AccountName, Mode=OneWay}" Width="*" MinWidth="80" />
+            <DataGridTextColumn Header="Подразделение" Binding="{Binding DivisionName, Mode=OneWay}" Width="1.5*" MinWidth="90" />
+            <DataGridTextColumn Header="Проект" Binding="{Binding ProjectName, Mode=OneWay}" Width="1.5*" MinWidth="90" />
+            <DataGridTextColumn Header="Статья" Binding="{Binding ArticleName, Mode=OneWay}" Width="2*" MinWidth="100" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

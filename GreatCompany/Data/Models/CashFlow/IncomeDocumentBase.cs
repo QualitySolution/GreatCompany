@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
+using QS.Validation;
 
 namespace GreatCompany.Data.Models;
 
-public abstract class IncomeDocument : PropertyChangedBase, IDomainObject {
+public abstract class IncomeDocumentBase : PropertyChangedBase, IDomainObject {
 	public virtual int Id { get; set; }
 
 	string purpose = "";
@@ -14,15 +15,15 @@ public abstract class IncomeDocument : PropertyChangedBase, IDomainObject {
 
 	public virtual string Title => Purpose;
 
-	decimal? amount = 0;
+	decimal? cost = 0;
 	[Display(Name = "Сумма")]
 	[RequiredField]
-	public virtual decimal? Amount { get => amount; set => SetField(ref amount, value); }
+	public virtual decimal? Cost { get => cost; set => SetField(ref cost, value); }
 
-	decimal? vatAmount = 0;
+	decimal? vat = 0;
 	[Display(Name = "Сумма НДС")]
 	[RequiredField]
-	public virtual decimal? VatAmount { get => vatAmount; set => SetField(ref vatAmount, value); }
+	public virtual decimal? Vat { get => vat; set => SetField(ref vat, value); }
 
 	Account account = null!;
 	[Display(Name = "Счёт")]
@@ -39,10 +40,10 @@ public abstract class IncomeDocument : PropertyChangedBase, IDomainObject {
 	[RequiredField]
 	public virtual IncomeArticle IncomeArticle { get => incomeArticle; set => SetField(ref incomeArticle, value); }
 
-	public virtual void FillFrom(IncomeDocument source) {
+	public virtual void FillFrom(IncomeDocumentBase source) {
 		Purpose = source.Purpose;
-		Amount = source.Amount;
-		VatAmount = source.VatAmount;
+		Cost = source.Cost;
+		Vat = source.Vat;
 		Account = source.Account;
 		Project = source.Project;
 		IncomeArticle = source.IncomeArticle;

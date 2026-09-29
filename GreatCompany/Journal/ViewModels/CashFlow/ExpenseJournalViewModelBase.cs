@@ -15,7 +15,7 @@ namespace GreatCompany.Journal.ViewModels.CashFlow;
 
 public abstract class ExpenseJournalViewModelBase<TEntity, TEntityViewModel>
 	: CashFlowJournalViewModelBase<TEntity, TEntityViewModel, ExpenseJournalNode, PaymentTemplateJournalViewModel>
-	where TEntity : ExpenseOperation
+	where TEntity : ExpenseOperationBase
 	where TEntityViewModel : DialogViewModelBase {
 
 	protected ExpenseJournalViewModelBase(
@@ -51,8 +51,8 @@ public abstract class ExpenseJournalViewModelBase<TEntity, TEntityViewModel>
 				list.Select(() => expenseAlias.Id).WithAlias(() => resultAlias.Id)
 					.Select(() => expenseAlias.Date).WithAlias(() => resultAlias.Date)
 					.Select(() => expenseAlias.Purpose).WithAlias(() => resultAlias.Purpose)
-					.Select(() => expenseAlias.Amount).WithAlias(() => resultAlias.Amount)
-					.Select(() => expenseAlias.VatAmount).WithAlias(() => resultAlias.VatAmount)
+					.Select(() => expenseAlias.Cost).WithAlias(() => resultAlias.Cost)
+					.Select(() => expenseAlias.Vat).WithAlias(() => resultAlias.Vat)
 					.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 					.Select(() => divisionAlias.Name).WithAlias(() => resultAlias.DivisionName)
 					.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
@@ -76,8 +76,8 @@ public class ExpenseJournalNode {
 	public int Id { get; set; }
 	public DateTime Date { get; set; }
 	public string Purpose { get; set; } = "";
-	public decimal Amount { get; set; }
-	public decimal VatAmount { get; set; }
+	public decimal Cost { get; set; }
+	public decimal Vat { get; set; }
 	public string? AccountName { get; set; }
 	public string? DivisionName { get; set; }
 	public string? ProjectName { get; set; }

@@ -8,8 +8,8 @@
         <DataGrid.Columns>
             <DataGridTextColumn Header="Код" Binding="{Binding Id, Mode=OneWay}" Width="60" CellStyleClasses="number" />
             <DataGridTextColumn Header="Назначение" Binding="{Binding Purpose, Mode=OneWay}" Width="3*" MinWidth="140" />
-            <DataGridTextColumn Header="Сумма" Binding="{Binding Amount, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
-            <DataGridTextColumn Header="НДС" Binding="{Binding VatAmount, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
+            <DataGridTextColumn Header="Сумма" Binding="{Binding Cost, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
+            <DataGridTextColumn Header="НДС" Binding="{Binding Vat, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
             <DataGridTextColumn Header="Счёт" Binding="{Binding AccountName, Mode=OneWay}" Width="*" MinWidth="80" />
             <DataGridTextColumn Header="Проект" Binding="{Binding ProjectName, Mode=OneWay}" Width="1.5*" MinWidth="90" />
             <DataGridTextColumn Header="Статья" Binding="{Binding ArticleName, Mode=OneWay}" Width="2*" MinWidth="100" />

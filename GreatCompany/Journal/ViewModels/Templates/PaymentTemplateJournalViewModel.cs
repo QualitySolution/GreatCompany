@@ -42,8 +42,8 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 			.SelectList(list => list
 				.Select(() => templateAlias.Id).WithAlias(() => resultAlias.Id)
 				.Select(() => templateAlias.Purpose).WithAlias(() => resultAlias.Purpose)
-				.Select(() => templateAlias.Amount).WithAlias(() => resultAlias.Amount)
-				.Select(() => templateAlias.VatAmount).WithAlias(() => resultAlias.VatAmount)
+				.Select(() => templateAlias.Cost).WithAlias(() => resultAlias.Cost)
+				.Select(() => templateAlias.Vat).WithAlias(() => resultAlias.Vat)
 				.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 				.Select(() => divisionAlias.Name).WithAlias(() => resultAlias.DivisionName)
 				.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
@@ -56,8 +56,8 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 public class PaymentTemplateJournalNode {
 	public int Id { get; set; }
 	public string Purpose { get; set; } = "";
-	public decimal Amount { get; set; }
-	public decimal VatAmount { get; set; }
+	public decimal Cost { get; set; }
+	public decimal Vat { get; set; }
 	public string? AccountName { get; set; }
 	public string? DivisionName { get; set; }
 	public string? ProjectName { get; set; }

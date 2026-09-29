@@ -10,7 +10,7 @@ namespace GreatCompany.ViewModels.CashFlow;
 
 /// <summary>карточка прихода, у шаблона начисления, плана и факта одни и те же поля выбора</summary>
 public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEntity>
-	where TEntity : IncomeDocument, new() {
+	where TEntity : IncomeDocumentBase, new() {
 
 	protected IncomeCardViewModelBase(IEntityUoWBuilder uowBuilder, CardDependencies deps)
 		: base(uowBuilder, deps) {

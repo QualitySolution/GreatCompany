@@ -3,5 +3,5 @@
 namespace GreatCompany.Data.Models;
 
 [Appellative(Gender = GrammaticalGender.Masculine, Nominative = "шаблон платежа", NominativePlural = "шаблоны платежей")]
-public class PaymentTemplate : ExpenseDocument {
+public class PaymentTemplate : ExpenseDocumentBase {
 }

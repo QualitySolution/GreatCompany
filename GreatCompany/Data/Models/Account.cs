@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
+using QS.Validation;
 
 namespace GreatCompany.Data.Models;
 

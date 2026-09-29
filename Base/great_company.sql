@@ -137,8 +137,8 @@ CREATE TABLE `planned_incomes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `date` date NOT NULL COMMENT 'Дата (важен месяц)',
   `purpose` text NOT NULL COMMENT 'Назначение',
-  `amount` decimal(19,2) NOT NULL COMMENT 'Сумма',
-  `vat_amount` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `vat` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
   `project_id` int(10) unsigned NOT NULL COMMENT 'Проект',
   `income_article_id` int(10) unsigned NOT NULL COMMENT 'Статья дохода',
@@ -163,8 +163,8 @@ CREATE TABLE `actual_incomes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `date` date NOT NULL COMMENT 'Дата',
   `purpose` text NOT NULL COMMENT 'Назначение',
-  `amount` decimal(19,2) NOT NULL COMMENT 'Сумма',
-  `vat_amount` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `vat` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
   `project_id` int(10) unsigned NOT NULL COMMENT 'Проект',
   `income_article_id` int(10) unsigned NOT NULL COMMENT 'Статья дохода',
@@ -192,10 +192,10 @@ CREATE TABLE `planned_expenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `date` date NOT NULL COMMENT 'Дата',
   `purpose` text NOT NULL COMMENT 'Назначение',
-  `amount` decimal(19,2) NOT NULL COMMENT 'Сумма',
-  `vat_amount` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `vat` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
-  `division_id` int(10) unsigned DEFAULT NULL COMMENT 'Дивизион (обязательно или из проекта)',
+  `division_id` int(10) unsigned NOT NULL COMMENT 'Дивизион',
   `project_id` int(10) unsigned DEFAULT NULL COMMENT 'Проект',
   `expense_article_id` int(10) unsigned NOT NULL COMMENT 'Статья расхода',
   PRIMARY KEY (`id`),
@@ -206,8 +206,7 @@ CREATE TABLE `planned_expenses` (
   CONSTRAINT `fk_planned_expenses_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
   CONSTRAINT `fk_planned_expenses_division` FOREIGN KEY (`division_id`) REFERENCES `divisions` (`id`),
   CONSTRAINT `fk_planned_expenses_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`),
-  CONSTRAINT `fk_planned_expenses_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`),
-  CONSTRAINT `chk_planned_expenses_division_or_project` CHECK (`division_id` IS NOT NULL OR `project_id` IS NOT NULL)
+  CONSTRAINT `fk_planned_expenses_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='План - расход';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -222,10 +221,10 @@ CREATE TABLE `actual_expenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `date` date NOT NULL COMMENT 'Дата',
   `purpose` text NOT NULL COMMENT 'Назначение',
-  `amount` decimal(19,2) NOT NULL COMMENT 'Сумма',
-  `vat_amount` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `vat` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
-  `division_id` int(10) unsigned DEFAULT NULL COMMENT 'Дивизион (обязательно или из проекта)',
+  `division_id` int(10) unsigned NOT NULL COMMENT 'Дивизион',
   `project_id` int(10) unsigned DEFAULT NULL COMMENT 'Проект',
   `expense_article_id` int(10) unsigned NOT NULL COMMENT 'Статья расхода',
   `planned_expense_id` int(10) unsigned DEFAULT NULL COMMENT 'Ссылка на план',
@@ -239,8 +238,7 @@ CREATE TABLE `actual_expenses` (
   CONSTRAINT `fk_actual_expenses_division` FOREIGN KEY (`division_id`) REFERENCES `divisions` (`id`),
   CONSTRAINT `fk_actual_expenses_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`),
   CONSTRAINT `fk_actual_expenses_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`),
-  CONSTRAINT `fk_actual_expenses_planned_expense` FOREIGN KEY (`planned_expense_id`) REFERENCES `planned_expenses` (`id`),
-  CONSTRAINT `chk_actual_expenses_division_or_project` CHECK (`division_id` IS NOT NULL OR `project_id` IS NOT NULL)
+  CONSTRAINT `fk_actual_expenses_planned_expense` FOREIGN KEY (`planned_expense_id`) REFERENCES `planned_expenses` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Факт - расход';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,8 +252,8 @@ DROP TABLE IF EXISTS `accrual_templates`;
 CREATE TABLE `accrual_templates` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `purpose` text NOT NULL COMMENT 'Назначение',
-  `amount` decimal(19,2) NOT NULL COMMENT 'Сумма',
-  `vat_amount` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `vat` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
   `project_id` int(10) unsigned NOT NULL COMMENT 'Проект',
   `income_article_id` int(10) unsigned NOT NULL COMMENT 'Статья дохода',
@@ -279,10 +277,10 @@ DROP TABLE IF EXISTS `payment_templates`;
 CREATE TABLE `payment_templates` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `purpose` text NOT NULL COMMENT 'Назначение',
-  `amount` decimal(19,2) NOT NULL COMMENT 'Сумма',
-  `vat_amount` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `vat` decimal(19,2) NOT NULL DEFAULT 0.00 COMMENT 'Сумма НДС',
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
-  `division_id` int(10) unsigned DEFAULT NULL COMMENT 'Дивизион (обязательно или из проекта)',
+  `division_id` int(10) unsigned NOT NULL COMMENT 'Дивизион',
   `project_id` int(10) unsigned DEFAULT NULL COMMENT 'Проект',
   `expense_article_id` int(10) unsigned NOT NULL COMMENT 'Статья расхода',
   PRIMARY KEY (`id`),
@@ -293,8 +291,7 @@ CREATE TABLE `payment_templates` (
   CONSTRAINT `fk_payment_templates_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
   CONSTRAINT `fk_payment_templates_division` FOREIGN KEY (`division_id`) REFERENCES `divisions` (`id`),
   CONSTRAINT `fk_payment_templates_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`),
-  CONSTRAINT `fk_payment_templates_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`),
-  CONSTRAINT `chk_payment_templates_division_or_project` CHECK (`division_id` IS NOT NULL OR `project_id` IS NOT NULL)
+  CONSTRAINT `fk_payment_templates_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Шаблон платежей';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

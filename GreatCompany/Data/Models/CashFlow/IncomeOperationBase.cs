@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
+using QS.Validation;
 
 namespace GreatCompany.Data.Models;
 
-public abstract class ExpenseOperation : ExpenseDocument {
+public abstract class IncomeOperationBase : IncomeDocumentBase {
 	DateTime? date = DateTime.Today;
 	[Display(Name = "Дата")]
 	[RequiredField]

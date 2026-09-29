@@ -12,9 +12,9 @@
         <TextBlock Text="Назначение" />
         <TextBox Text="{Binding Entity.Purpose}" AcceptsReturn="True" Height="60" TextWrapping="Wrap" />
         <TextBlock Text="Сумма" />
-        <NumericUpDown Value="{Binding Entity.Amount}" Minimum="0" FormatString="0.00" />
+        <NumericUpDown Value="{Binding Entity.Cost}" Minimum="0" FormatString="0.00" />
         <TextBlock Text="Сумма НДС" />
-        <NumericUpDown Value="{Binding Entity.VatAmount}" Minimum="0" FormatString="0.00" />
+        <NumericUpDown Value="{Binding Entity.Vat}" Minimum="0" FormatString="0.00" />
         <TextBlock Text="Счёт" />
         <widgets:EntityEntryView ViewModel="{Binding AccountEntry}" />
         <TextBlock Text="Проект" />

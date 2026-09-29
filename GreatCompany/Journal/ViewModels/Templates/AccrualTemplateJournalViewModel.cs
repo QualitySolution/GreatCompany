@@ -40,8 +40,8 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 			.SelectList(list => list
 				.Select(() => templateAlias.Id).WithAlias(() => resultAlias.Id)
 				.Select(() => templateAlias.Purpose).WithAlias(() => resultAlias.Purpose)
-				.Select(() => templateAlias.Amount).WithAlias(() => resultAlias.Amount)
-				.Select(() => templateAlias.VatAmount).WithAlias(() => resultAlias.VatAmount)
+				.Select(() => templateAlias.Cost).WithAlias(() => resultAlias.Cost)
+				.Select(() => templateAlias.Vat).WithAlias(() => resultAlias.Vat)
 				.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 				.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
 				.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName))
@@ -53,8 +53,8 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 public class AccrualTemplateJournalNode {
 	public int Id { get; set; }
 	public string Purpose { get; set; } = "";
-	public decimal Amount { get; set; }
-	public decimal VatAmount { get; set; }
+	public decimal Cost { get; set; }
+	public decimal Vat { get; set; }
 	public string? AccountName { get; set; }
 	public string? ProjectName { get; set; }
 	public string? ArticleName { get; set; }

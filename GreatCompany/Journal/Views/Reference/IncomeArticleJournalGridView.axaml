@@ -1,0 +1,13 @@
+<UserControl x:Class="GreatCompany.Journal.Views.Reference.IncomeArticleJournalGridView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:journal="clr-namespace:GreatCompany.Journal.ViewModels.Reference"
+             x:DataType="journal:IncomeArticleJournalNode">
+    <DataGrid x:Name="dataGrid" IsReadOnly="True" AutoGenerateColumns="False"
+              GridLinesVisibility="All" CanUserResizeColumns="True" CanUserSortColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Код" Binding="{Binding Id, Mode=OneWay}" Width="60" CellStyleClasses="number" />
+            <DataGridTextColumn Header="Название" Binding="{Binding Name, Mode=OneWay}" Width="*" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

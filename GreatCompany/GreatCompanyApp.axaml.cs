@@ -1,5 +1,4 @@
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -7,15 +6,16 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
+using QS.Dialog;
+using QS.ErrorReporting;
 using QS.Launcher.AppRunner;
-using QS.Project;
 using QS.Project.DB;
-using QS.ViewModels.Resolve;
 
 namespace GreatCompany;
 
 public partial class GreatCompanyApp : Application {
-	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private readonly IServiceProvider? startupServices;
+	private readonly CrashReporting? crashReporting;
 	private readonly string? connectionString;
 	private readonly string? login;
 	private readonly string? sessionId;
@@ -23,10 +23,13 @@ public partial class GreatCompanyApp : Application {
 	private ILifetimeScope? mainContainer;
 	private bool isShuttingDown;
 
-	public GreatCompanyApp() : this(null, null, null, null) {
+	public GreatCompanyApp() : this(null, null, null, null, null, null) {
 	}
 
-	public GreatCompanyApp(string? connectionString, string? login, string? sessionId, string? baseTitle) {
+	public GreatCompanyApp(IServiceProvider? startupServices, CrashReporting? crashReporting,
+		string? connectionString, string? login, string? sessionId, string? baseTitle) {
+		this.startupServices = startupServices;
+		this.crashReporting = crashReporting;
 		this.connectionString = connectionString;
 		this.login = login;
 		this.sessionId = sessionId;
@@ -42,6 +45,11 @@ public partial class GreatCompanyApp : Application {
 			base.OnFrameworkInitializationCompleted();
 			return;
 		}
+
+		// контейнера ещё нет и разбирать ошибку нечем, но перехват нужен уже сейчас.
+		// без него падение в лончере или при сборке контейнера молча закрывает приложение
+		DispatcherExceptionHandler.Install();
+		RxAppExceptionHandler.Install();
 
 		if(ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 			desktop.Exit += (_, _) => DisposeApplicationServices();
@@ -61,31 +69,26 @@ public partial class GreatCompanyApp : Application {
 	private void ShowLauncher(IClassicDesktopStyleApplicationLifetime desktop) {
 		desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-		var launcherWindow = Program.StartupServiceProvider.GetRequiredService<QS.Launcher.Views.MainWindow>();
-		var runner = Program.StartupServiceProvider.GetRequiredService<InProcessRunner>();
-		var previousCallback = runner.OnLogin;
-		var loginAccepted = false;
+		var services = startupServices ?? throw new InvalidOperationException("Сервисы лончера не переданы.");
+		var launcherWindow = services.GetRequiredService<QS.Launcher.Views.MainWindow>();
+		var runner = services.GetRequiredService<InProcessRunner>();
 
-		runner.OnLogin = response => {
-			previousCallback?.Invoke(response);
+		runner.OnLogin = response => Dispatcher.UIThread.Post(() => {
+			var mainWindow = CreateMainWindow(
+				response.ConnectionString,
+				response.Login,
+				response.Parameters.GetValueOrDefault("SessionId"),
+				response.Parameters.GetValueOrDefault("BaseTitle"));
 
-			loginAccepted = true;
-			Dispatcher.UIThread.Post(() => {
-				var mainWindow = CreateMainWindow(
-					response.ConnectionString,
-					response.Login,
-					response.Parameters.GetValueOrDefault("SessionId"),
-					response.Parameters.GetValueOrDefault("BaseTitle"));
+			SetupMainWindowLifetime(desktop, mainWindow);
+			desktop.MainWindow = mainWindow;
+			mainWindow.Show();
+			launcherWindow.Close();
+		});
 
-				SetupMainWindowLifetime(desktop, mainWindow);
-				desktop.MainWindow = mainWindow;
-				mainWindow.Show();
-				launcherWindow.Close();
-			});
-		};
-
+		// главного окна нет - вход не состоялся или окно не создалось, работать дальше нечему
 		launcherWindow.Closed += (_, _) => {
-			if(!loginAccepted)
+			if(desktop.MainWindow == null)
 				ShutdownApplication(desktop);
 		};
 
@@ -93,46 +96,32 @@ public partial class GreatCompanyApp : Application {
 	}
 
 	private MainWindow CreateMainWindow(string? connString, string? userLogin, string? userSessionId, string? userBaseTitle) {
-		try {
-			if(string.IsNullOrWhiteSpace(connString))
-				throw new InvalidOperationException("Строка подключения не установлена.");
+		if(string.IsNullOrWhiteSpace(connString))
+			throw new InvalidOperationException("Строка подключения не установлена.");
 
-			var connectionStringBuilder = new MySqlConnectionStringBuilder(connString);
-			IDatabaseConnectionSettings databaseConnectionSettings = new DatabaseConnectionSettings(connectionStringBuilder);
+		if(string.IsNullOrWhiteSpace(userLogin))
+			throw new InvalidOperationException("Логин пользователя не передан.");
 
-			var containerBuilder = new ContainerBuilder()
-				.AutofacDatabaseConfig()
-				.AddAvaloniaNavigation();
+		var settings = new DatabaseConnectionSettings(new MySqlConnectionStringBuilder(connString));
+		mainContainer?.Dispose();
+		mainContainer = CompositionRoot.BuildContainer(
+			settings, userLogin, userSessionId ?? string.Empty);
 
-			ILifetimeScope? builtContainer = null;
-			containerBuilder
-				.Register(_ => new AutofacViewModelResolver(builtContainer!))
-				.As<IViewModelResolver>()
-				.SingleInstance();
-
-			var services = new ServiceCollection();
-			services.AddDatabaseSettings(databaseConnectionSettings);
-			services.AddClassConfig(userLogin ?? string.Empty, userSessionId ?? string.Empty);
-			services.AddGuiClasses();
-			services.AddInteractive();
-			containerBuilder.Populate(services);
-
-			var container = containerBuilder.Build();
-			builtContainer = container;
-			mainContainer = container;
-
-			var viewResolver = container.Resolve<QS.Navigation.IAvaloniaViewResolver>();
-			DataTemplates.Add(viewResolver);
-
-			return container.Resolve<MainWindow>(
-				new TypedParameter(typeof(string), userLogin),
-				new TypedParameter(typeof(string), userSessionId),
-				new TypedParameter(typeof(string), userBaseTitle));
+		var errorHandling = mainContainer.Resolve<IErrorHandlingService>();
+		DispatcherExceptionHandler.Install(errorHandling);
+		RxAppExceptionHandler.Install(errorHandling);
+		if(crashReporting != null) {
+			crashReporting.Reporter = mainContainer.Resolve<IErrorReporter>();
+			crashReporting.Settings = mainContainer.Resolve<IErrorReportingSettings>();
 		}
-		catch(Exception ex) {
-			logger.Error(ex, "Не удалось создать главное окно.");
-			throw;
-		}
+
+		DataTemplates.Add(mainContainer.Resolve<QS.Navigation.IAvaloniaViewResolver>());
+
+		// параметры окна передаём только по имени, три строки подряд Autofac по типу не различит
+		return mainContainer.Resolve<MainWindow>(
+			new NamedParameter("login", userLogin),
+			new NamedParameter("sessionId", userSessionId),
+			new NamedParameter("baseTitle", userBaseTitle));
 	}
 
 	private void SetupMainWindowLifetime(IClassicDesktopStyleApplicationLifetime desktop, MainWindow mainWindow) {
@@ -148,10 +137,9 @@ public partial class GreatCompanyApp : Application {
 		desktop.Shutdown();
 	}
 
+	// сервисы лончера освобождает Program, он их и создал
 	private void DisposeApplicationServices() {
 		mainContainer?.Dispose();
 		mainContainer = null;
-
-		Program.StartupServiceProvider?.Dispose();
 	}
 }

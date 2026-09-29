@@ -1,0 +1,10 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GreatCompany.Views.CardButtons"
+             x:CompileBindings="True"
+             x:Name="root">
+    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+        <Button Content="Сохранить" Command="{Binding #root.Save}" />
+        <Button Content="Отмена" Command="{Binding #root.Cancel}" />
+    </StackPanel>
+</UserControl>

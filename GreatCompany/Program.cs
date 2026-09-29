@@ -1,20 +1,28 @@
 using Avalonia;
 using GreatCompany.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QS.ErrorReporting;
 using QS.Launcher;
-using QS.Launcher.AppRunner;
 using QS.Project;
 using ReactiveUI.Avalonia;
 
 namespace GreatCompany;
 
-public class Program {
+public static class Program {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-	internal static ServiceProvider StartupServiceProvider = null!;
 
 	[STAThread]
 	public static void Main(string[] args) {
 		logger.Info("=== Старт приложения ===");
+
+		// отправителя отчёта задаём после входа в базу, до этого контейнера нет
+		var crashReporting = new CrashReporting();
+		crashReporting.Subscribe();
+
+		TaskScheduler.UnobservedTaskException += (_, e) => {
+			logger.Error(e.Exception, "Необработанное исключение в фоновой задаче.");
+			e.SetObserved();
+		};
 
 		string? connectionString = Environment.GetEnvironmentVariable("QS_CONNECTION_STRING");
 		string? login = Environment.GetEnvironmentVariable("QS_LOGIN");
@@ -23,24 +31,15 @@ public class Program {
 
 		ClearConnectionEnvironment();
 
-		var startLauncher = string.IsNullOrEmpty(connectionString);
-		ConfigureStartupServices(startLauncher);
+		// окно лончера создаётся из этих сервисов внутри рабочего цикла Avalonia, освобождаем после него
+		using var startupServices = ConfigureStartupServices(string.IsNullOrEmpty(connectionString));
 
-		if(startLauncher) {
-			var runner = StartupServiceProvider.GetRequiredService<InProcessRunner>();
-			runner.OnLogin = response => {
-				login = response.Login;
-				sessionId = response.Parameters.GetValueOrDefault("SessionId");
-				connectionString = response.ConnectionString;
-				baseTitle = response.Parameters.GetValueOrDefault("BaseTitle");
-			};
-		}
-
-		BuildAvaloniaApp(connectionString, login, sessionId, baseTitle).StartWithClassicDesktopLifetime(args);
+		BuildAvaloniaApp(startupServices, crashReporting, connectionString, login, sessionId, baseTitle)
+			.StartWithClassicDesktopLifetime(args);
 		logger.Info("=== Завершение приложения ===");
 	}
 
-	private static void ConfigureStartupServices(bool withLauncher) {
+	private static ServiceProvider ConfigureStartupServices(bool withLauncher) {
 		var startupServices = new ServiceCollection();
 
 		if(withLauncher) {
@@ -53,7 +52,7 @@ public class Program {
 				.AddInteractive();
 		}
 
-		StartupServiceProvider = startupServices.BuildServiceProvider();
+		return startupServices.BuildServiceProvider();
 	}
 
 	private static void ClearConnectionEnvironment() {
@@ -63,11 +62,13 @@ public class Program {
 		Environment.SetEnvironmentVariable("QS_BaseTitle", null, EnvironmentVariableTarget.Process);
 	}
 
+	// нужен дизайнеру Avalonia, он поднимает приложение без строки подключения и лончера
 	public static AppBuilder BuildAvaloniaApp()
-		=> BuildAvaloniaApp(null, null, null, null);
+		=> BuildAvaloniaApp(null, null, null, null, null, null);
 
-	public static AppBuilder BuildAvaloniaApp(string? connectionString, string? login, string? sessionId, string? baseTitle)
-		=> AppBuilder.Configure(() => new GreatCompanyApp(connectionString, login, sessionId, baseTitle))
+	public static AppBuilder BuildAvaloniaApp(IServiceProvider? startupServices, CrashReporting? crashReporting,
+		string? connectionString, string? login, string? sessionId, string? baseTitle)
+		=> AppBuilder.Configure(() => new GreatCompanyApp(startupServices, crashReporting, connectionString, login, sessionId, baseTitle))
 			.UsePlatformDetect()
 			.WithInterFont()
 			.LogToTrace()

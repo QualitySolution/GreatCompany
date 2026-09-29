@@ -7,6 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:QS.Navigation.Views;assembly=QS.Project.Avalonia"
         Title="QS: Великая компания"
+        Icon="avares://GreatCompany/Assets/logo.ico"
         Width="1100"
         Height="700"
         MinWidth="800"
@@ -14,36 +15,40 @@
         d:DesignHeight="700"
         d:DesignWidth="1100"
         WindowStartupLocation="CenterScreen"
+        TransparencyLevelHint="None"
+        Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
         mc:Ignorable="d">
     <Window.Resources>
         <SolidColorBrush x:Key="NavigationViewItemForeground" Color="#F7FBFF" />
-        <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="#08B99B" />
-        <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="#08B99B" />
-        <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="#079E86" />
-        <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#0A346D" />
-        <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#0B3D79" />
-        <SolidColorBrush x:Key="NavigationViewItemBackgroundPressed" Color="#082F63" />
+        <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#057762" />
+        <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#079E86" />
+        <SolidColorBrush x:Key="NavigationViewItemBackgroundPressed" Color="#046653" />
         <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#08B99B" />
     </Window.Resources>
     <Window.Styles>
         <Style Selector="fa|NavigationViewItem fa|NavigationViewItem">
             <Setter Property="Margin" Value="-20,0,0,0" />
         </Style>
+
+        <!-- в свёрнутом меню дочерние пункты переезжают во всплывающую панель справа.
+             отрицательный отступ выше уводил бы их за левый край панели.
+             сама панель мерилась бы на 20 пикселей уже содержимого, и значки с текстом обрезались бы -->
+        <Style Selector="FlyoutPresenter fa|NavigationViewItem">
+            <Setter Property="Margin" Value="0" />
+        </Style>
     </Window.Styles>
     <fa:NavigationView x:Name="navigationView"
-                       Background="#06275A"
+                       Background="#034F42"
                        IsPaneOpen="True"
                        IsSettingsVisible="False"
                        OpenPaneLength="260"
                        PaneDisplayMode="Left"
                        PaneTitle="Великая компания"
-                       SelectionChanged="OnNavViewSelectionChanged">
+                       ItemInvoked="OnNavViewItemInvoked">
         <fa:NavigationView.MenuItems>
-            <fa:NavigationViewItem x:Name="mainMenuItem" Content="Главная">
-                <fa:NavigationViewItem.IconSource>
-                    <fi:FluentIconSource Icon="Home" />
-                </fa:NavigationViewItem.IconSource>
-            </fa:NavigationViewItem>
             <fa:NavigationViewItem x:Name="cashFlowMenuItem" Content="Денежные потоки">
                 <fa:NavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="BuildingRetailMoney" />
@@ -98,7 +103,7 @@
                             <fi:FluentIconSource Icon="Box" />
                         </fa:NavigationViewItem.IconSource>
                     </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="Дивизионы">
+                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="Подразделения">
                         <fa:NavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="PeopleTeam" />
                         </fa:NavigationViewItem.IconSource>

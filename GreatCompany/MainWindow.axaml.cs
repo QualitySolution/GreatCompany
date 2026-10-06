@@ -11,9 +11,9 @@ namespace GreatCompany;
 
 public partial class MainWindow : Window {
 	private readonly AvaloniaNavigationManager? navigationManager;
-	private readonly Dictionary<NavigationViewItem, Action> menuItems = [];
+	private readonly Dictionary<FANavigationViewItem, Action> menuItems = [];
 	// по нему подсветка в меню следует за активной вкладкой
-	private readonly Dictionary<Type, NavigationViewItem> menuItemsByViewModel = [];
+	private readonly Dictionary<Type, FANavigationViewItem> menuItemsByViewModel = [];
 
 	public MainWindow() {
 		InitializeComponent();
@@ -62,15 +62,15 @@ public partial class MainWindow : Window {
 		RegMenuItem<ChangeLogViewModel>(changeLogMenuItem);
 	}
 
-	private void RegMenuItem<TViewModel>(NavigationViewItem item) where TViewModel : class, IDialogViewModel {
+	private void RegMenuItem<TViewModel>(FANavigationViewItem item) where TViewModel : class, IDialogViewModel {
 		menuItems.Add(item, () => navigationManager?.OpenViewModel<TViewModel>(null));
 		menuItemsByViewModel.Add(typeof(TViewModel), item);
 	}
 
 	// слушаем клик, а не смену выбора, потому что закрытие вкладки не снимает выделение с пункта меню.
 	// по SelectionChanged тот же журнал повторно не открыть, выбор не меняется
-	private void OnNavViewItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e) {
-		if(e.InvokedItemContainer is NavigationViewItem item && menuItems.TryGetValue(item, out var action))
+	private void OnNavViewItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e) {
+		if(e.InvokedItemContainer is FANavigationViewItem item && menuItems.TryGetValue(item, out var action))
 			action();
 	}
 

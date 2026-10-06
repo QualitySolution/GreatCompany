@@ -29,18 +29,18 @@
         <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#08B99B" />
     </Window.Resources>
     <Window.Styles>
-        <Style Selector="fa|NavigationViewItem fa|NavigationViewItem">
+        <Style Selector="fa|FANavigationViewItem fa|FANavigationViewItem">
             <Setter Property="Margin" Value="-20,0,0,0" />
         </Style>
 
         <!-- в свёрнутом меню дочерние пункты переезжают во всплывающую панель справа.
              отрицательный отступ выше уводил бы их за левый край панели.
              сама панель мерилась бы на 20 пикселей уже содержимого, и значки с текстом обрезались бы -->
-        <Style Selector="FlyoutPresenter fa|NavigationViewItem">
+        <Style Selector="FlyoutPresenter fa|FANavigationViewItem">
             <Setter Property="Margin" Value="0" />
         </Style>
     </Window.Styles>
-    <fa:NavigationView x:Name="navigationView"
+    <fa:FANavigationView x:Name="navigationView"
                        Background="#034F42"
                        IsPaneOpen="True"
                        IsSettingsVisible="False"
@@ -48,93 +48,93 @@
                        PaneDisplayMode="Left"
                        PaneTitle="Великая компания"
                        ItemInvoked="OnNavViewItemInvoked">
-        <fa:NavigationView.MenuItems>
-            <fa:NavigationViewItem x:Name="cashFlowMenuItem" Content="Денежные потоки">
-                <fa:NavigationViewItem.IconSource>
+        <fa:FANavigationView.MenuItems>
+            <fa:FANavigationViewItem x:Name="cashFlowMenuItem" Content="Денежные потоки">
+                <fa:FANavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="BuildingRetailMoney" />
-                </fa:NavigationViewItem.IconSource>
-                <fa:NavigationViewItem.MenuItems>
-                    <fa:NavigationViewItem x:Name="plannedIncomesMenuItem" Content="План - приход">
-                        <fa:NavigationViewItem.IconSource>
+                </fa:FANavigationViewItem.IconSource>
+                <fa:FANavigationViewItem.MenuItems>
+                    <fa:FANavigationViewItem x:Name="plannedIncomesMenuItem" Content="План - приход">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="DataTrending" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="actualIncomesMenuItem" Content="Факт - приход">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="actualIncomesMenuItem" Content="Факт - приход">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="Database" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="plannedExpensesMenuItem" Content="План - расход">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="plannedExpensesMenuItem" Content="План - расход">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="DataTrending" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="actualExpensesMenuItem" Content="Факт - расход">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="actualExpensesMenuItem" Content="Факт - расход">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="Database" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                </fa:NavigationViewItem.MenuItems>
-            </fa:NavigationViewItem>
-            <fa:NavigationViewItem x:Name="templatesMenuItem" Content="Шаблоны">
-                <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                </fa:FANavigationViewItem.MenuItems>
+            </fa:FANavigationViewItem>
+            <fa:FANavigationViewItem x:Name="templatesMenuItem" Content="Шаблоны">
+                <fa:FANavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="Apps" />
-                </fa:NavigationViewItem.IconSource>
-                <fa:NavigationViewItem.MenuItems>
-                    <fa:NavigationViewItem x:Name="accrualTemplatesMenuItem" Content="Шаблоны начислений">
-                        <fa:NavigationViewItem.IconSource>
+                </fa:FANavigationViewItem.IconSource>
+                <fa:FANavigationViewItem.MenuItems>
+                    <fa:FANavigationViewItem x:Name="accrualTemplatesMenuItem" Content="Шаблоны начислений">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="AppGeneric" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="paymentTemplatesMenuItem" Content="Шаблоны платежей">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="paymentTemplatesMenuItem" Content="Шаблоны платежей">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="AppGeneric" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                </fa:NavigationViewItem.MenuItems>
-            </fa:NavigationViewItem>
-            <fa:NavigationViewItem x:Name="directoriesMenuItem" Content="Справочники">
-                <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                </fa:FANavigationViewItem.MenuItems>
+            </fa:FANavigationViewItem>
+            <fa:FANavigationViewItem x:Name="directoriesMenuItem" Content="Справочники">
+                <fa:FANavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="Database" />
-                </fa:NavigationViewItem.IconSource>
-                <fa:NavigationViewItem.MenuItems>
-                    <fa:NavigationViewItem x:Name="projectsMenuItem" Content="Проекты">
-                        <fa:NavigationViewItem.IconSource>
+                </fa:FANavigationViewItem.IconSource>
+                <fa:FANavigationViewItem.MenuItems>
+                    <fa:FANavigationViewItem x:Name="projectsMenuItem" Content="Проекты">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="Box" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="divisionsMenuItem" Content="Подразделения">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="divisionsMenuItem" Content="Подразделения">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="PeopleTeam" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="accountsMenuItem" Content="Счета">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="accountsMenuItem" Content="Счета">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="PersonKey" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="incomeArticlesMenuItem" Content="Статьи дохода">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="incomeArticlesMenuItem" Content="Статьи дохода">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="DataTrending" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                    <fa:NavigationViewItem x:Name="expenseArticlesMenuItem" Content="Статьи расхода">
-                        <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                    <fa:FANavigationViewItem x:Name="expenseArticlesMenuItem" Content="Статьи расхода">
+                        <fa:FANavigationViewItem.IconSource>
                             <fi:FluentIconSource Icon="DataTrending" />
-                        </fa:NavigationViewItem.IconSource>
-                    </fa:NavigationViewItem>
-                </fa:NavigationViewItem.MenuItems>
-            </fa:NavigationViewItem>
-        </fa:NavigationView.MenuItems>
-        <fa:NavigationView.FooterMenuItems>
-            <fa:NavigationViewItem x:Name="changeLogMenuItem" Content="Что нового?">
-                <fa:NavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem.IconSource>
+                    </fa:FANavigationViewItem>
+                </fa:FANavigationViewItem.MenuItems>
+            </fa:FANavigationViewItem>
+        </fa:FANavigationView.MenuItems>
+        <fa:FANavigationView.FooterMenuItems>
+            <fa:FANavigationViewItem x:Name="changeLogMenuItem" Content="Что нового?">
+                <fa:FANavigationViewItem.IconSource>
                     <fi:FluentIconSource Icon="News" />
-                </fa:NavigationViewItem.IconSource>
-            </fa:NavigationViewItem>
-        </fa:NavigationView.FooterMenuItems>
-        <fa:NavigationView.Content>
+                </fa:FANavigationViewItem.IconSource>
+            </fa:FANavigationViewItem>
+        </fa:FANavigationView.FooterMenuItems>
+        <fa:FANavigationView.Content>
             <views:NavigationManagerView x:Name="navigationManagerView" />
-        </fa:NavigationView.Content>
-    </fa:NavigationView>
+        </fa:FANavigationView.Content>
+    </fa:FANavigationView>
 </Window>

@@ -1,4 +1,4 @@
-﻿using Gamma.Utilities;
+﻿using QS.Utilities.Enums;
 using GreatCompany.Data.Models;
 using GreatCompany.ViewModels.Reference;
 using NHibernate;

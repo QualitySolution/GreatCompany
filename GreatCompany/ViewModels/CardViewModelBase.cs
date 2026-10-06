@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using System.Reactive;
+using ReactiveUI.Primitives;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
@@ -27,8 +27,8 @@ public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEn
 	// в библиотечном диалоге Entity - поле, а вьюхи биндятся на свойства
 	public new TEntity Entity => base.Entity;
 
-	public ReactiveCommand<Unit, Unit> SaveCommand { get; }
-	public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+	public ReactiveCommand<RxVoid, RxVoid> SaveCommand { get; }
+	public ReactiveCommand<RxVoid, RxVoid> CancelCommand { get; }
 
 	public override bool Save() {
 		if(!base.Save())

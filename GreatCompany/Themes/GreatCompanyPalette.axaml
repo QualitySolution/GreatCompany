@@ -1,0 +1,30 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Великая компания: фирменный бирюзовый -->
+    <Color x:Key="QsColorSystemAccent">#08B99B</Color>
+    <SolidColorBrush x:Key="QsBrushPrimary" Color="#057762" />
+    <SolidColorBrush x:Key="QsBrushPrimaryHover" Color="#079E86" />
+    <SolidColorBrush x:Key="QsBrushPrimaryPressed" Color="#046653" />
+    <SolidColorBrush x:Key="QsBrushOnPrimary" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="QsBrushAccent" Color="#08B99B" />
+
+    <!-- Оформление окна: заголовок, меню, вкладки -->
+    <SolidColorBrush x:Key="QsBrushChrome" Color="#034F42" />
+    <SolidColorBrush x:Key="QsBrushChromeHover" Color="#046653" />
+    <SolidColorBrush x:Key="QsBrushChromePressed" Color="#057762" />
+    <SolidColorBrush x:Key="QsBrushChromeText" Color="#F7FBFF" />
+    <SolidColorBrush x:Key="QsBrushChromeTextMuted" Color="#B5D6CF" />
+
+    <!-- Рабочая область -->
+    <SolidColorBrush x:Key="QsBrushCanvas" Color="#F0F6F5" />
+    <SolidColorBrush x:Key="QsBrushSurface" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="QsBrushSurfaceHover" Color="#F5FAF9" />
+    <SolidColorBrush x:Key="QsBrushSurfaceMuted" Color="#E9F2F0" />
+    <SolidColorBrush x:Key="QsBrushTextPrimary" Color="#17211F" />
+    <SolidColorBrush x:Key="QsBrushTextSecondary" Color="#4F625E" />
+    <SolidColorBrush x:Key="QsBrushBorder" Color="#C9DAD6" />
+    <SolidColorBrush x:Key="QsBrushBorderStrong" Color="#98B3AD" />
+    <SolidColorBrush x:Key="QsBrushBorderSubtle" Color="#E1ECE9" />
+    <SolidColorBrush x:Key="QsBrushSelection" Color="#CFEFE8" />
+    <SolidColorBrush x:Key="QsBrushSelectionText" Color="#034F42" />
+</ResourceDictionary>

@@ -134,7 +134,7 @@ public partial class GreatCompanyApp : Application {
 			new NamedParameter("login", userLogin),
 			new NamedParameter("sessionId", userSessionId),
 			new NamedParameter("baseTitle", userBaseTitle));
-		progress?.End();
+		progress?.End("Открытие окна");
 		return window;
 	}
 

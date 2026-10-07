@@ -10,10 +10,12 @@ using QS.Dialog;
 using QS.ErrorReporting;
 using QS.Launcher.AppRunner;
 using QS.Project.DB;
+using NLog;
 
 namespace GreatCompany;
 
 public partial class GreatCompanyApp : Application {
+	private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 	private readonly IServiceProvider? startupServices;
 	private readonly CrashReporting? crashReporting;
 	private readonly string? connectionString;
@@ -78,7 +80,8 @@ public partial class GreatCompanyApp : Application {
 				response.ConnectionString,
 				response.Login,
 				response.Parameters.GetValueOrDefault("SessionId"),
-				response.Parameters.GetValueOrDefault("BaseTitle"));
+				response.Parameters.GetValueOrDefault("BaseTitle"),
+				runner.Progress);
 
 			SetupMainWindowLifetime(desktop, mainWindow);
 			desktop.MainWindow = mainWindow;
@@ -95,18 +98,26 @@ public partial class GreatCompanyApp : Application {
 		launcherWindow.Show();
 	}
 
-	private MainWindow CreateMainWindow(string? connString, string? userLogin, string? userSessionId, string? userBaseTitle) {
+	private MainWindow CreateMainWindow(string? connString, string? userLogin, string? userSessionId, string? userBaseTitle,
+		IProgressBarDisplayable? progressBar = null) {
 		if(string.IsNullOrWhiteSpace(connString))
 			throw new InvalidOperationException("Строка подключения не установлена.");
 
 		if(string.IsNullOrWhiteSpace(userLogin))
 			throw new InvalidOperationException("Логин пользователя не передан.");
 
+		// Сборка контейнера и окна идёт в потоке интерфейса, поэтому показываем пользователю шаги
+		// и каждый раз даём окну перерисоваться
+		var progress = progressBar == null
+			? null
+			: new ProgressPerformanceHelper(progressBar, 6, "Регистрация служб", logger, showProgressText: true);
+
 		var settings = new DatabaseConnectionSettings(new MySqlConnectionStringBuilder(connString));
 		mainContainer?.Dispose();
 		mainContainer = CompositionRoot.BuildContainer(
-			settings, userLogin, userSessionId ?? string.Empty);
+			settings, userLogin, userSessionId ?? string.Empty, progress);
 
+		progress?.CheckPoint("Настройка обработки ошибок");
 		var errorHandling = mainContainer.Resolve<IErrorHandlingService>();
 		DispatcherExceptionHandler.Install(errorHandling);
 		RxAppExceptionHandler.Install(errorHandling);
@@ -117,11 +128,14 @@ public partial class GreatCompanyApp : Application {
 
 		DataTemplates.Add(mainContainer.Resolve<QS.Navigation.IAvaloniaViewResolver>());
 
+		progress?.CheckPoint("Создание главного окна");
 		// параметры окна передаём только по имени, три строки подряд Autofac по типу не различит
-		return mainContainer.Resolve<MainWindow>(
+		var window = mainContainer.Resolve<MainWindow>(
 			new NamedParameter("login", userLogin),
 			new NamedParameter("sessionId", userSessionId),
 			new NamedParameter("baseTitle", userBaseTitle));
+		progress?.End();
+		return window;
 	}
 
 	private void SetupMainWindowLifetime(IClassicDesktopStyleApplicationLifetime desktop, MainWindow mainWindow) {

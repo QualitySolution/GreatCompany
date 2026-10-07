@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Tool.hbm2ddl;
+using QS.Dialog;
 using QS.Project;
 using QS.Project.DB;
 using QS.ViewModels.Resolve;
@@ -9,7 +10,8 @@ using QS.ViewModels.Resolve;
 namespace GreatCompany;
 
 internal static class CompositionRoot {
-	public static ILifetimeScope BuildContainer(IDatabaseConnectionSettings settings, string login, string sessionId) {
+	public static ILifetimeScope BuildContainer(IDatabaseConnectionSettings settings, string login, string sessionId,
+		ProgressPerformanceHelper? progress = null) {
 		var builder = new ContainerBuilder()
 			.AddApplicationInfo()
 			.AddAvaloniaNavigation()
@@ -29,6 +31,13 @@ internal static class CompositionRoot {
 		builder.Populate(services);
 
 		var container = builder.Build();
+
+		// Эти синглтоны самые долгие при запуске, создаём их здесь отдельными шагами ради прогресса
+		progress?.CheckPoint("Загрузка маппинга базы данных");
+		container.Resolve<NHibernate.Cfg.Configuration>();
+		progress?.CheckPoint("Подключение к базе данных");
+		container.Resolve<NHibernate.ISessionFactory>();
+		progress?.CheckPoint("Проверка схемы базы данных");
 		ValidateSchemaInDebug(container);
 		return container;
 	}

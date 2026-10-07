@@ -92,10 +92,29 @@ CREATE TABLE `projects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `name` varchar(255) NOT NULL COMMENT 'Название',
   `division_id` int(10) unsigned NOT NULL COMMENT 'Дивизион',
+  `is_archived` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Архивный',
   PRIMARY KEY (`id`),
   KEY `fk_projects_division_idx` (`division_id`),
   CONSTRAINT `fk_projects_division` FOREIGN KEY (`division_id`) REFERENCES `divisions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Проект';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `project_intra_services`
+--
+
+DROP TABLE IF EXISTS `project_intra_services`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `project_intra_services` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
+  `project_id` int(10) unsigned NOT NULL COMMENT 'Проект',
+  `intra_id` int(10) unsigned NOT NULL COMMENT 'Intra ID сервиса',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `intra_id_UNIQUE` (`intra_id`),
+  KEY `fk_project_intra_services_project_idx` (`project_id`),
+  CONSTRAINT `fk_project_intra_services_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Связь проекта с сервисами IntraService';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -18,4 +18,8 @@ public class Project : PropertyChangedBase, IDomainObject {
 	[Display(Name = "Подразделение")]
 	[RequiredField]
 	public virtual Division Division { get => division; set => SetField(ref division, value); }
+
+	bool isArchived;
+	[Display(Name = "Архивный")]
+	public virtual bool IsArchived { get => isArchived; set => SetField(ref isArchived, value); }
 }

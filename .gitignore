@@ -4,3 +4,5 @@ obj/
 .idea/
 *.user
 *.DotSettings.user
+WinInstall/Files/
+WinInstall/*.exe

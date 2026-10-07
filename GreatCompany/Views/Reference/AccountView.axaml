@@ -6,18 +6,23 @@
              xmlns:converters="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
              x:Class="GreatCompany.Views.Reference.AccountView"
              x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
              x:DataType="vm:AccountViewModel">
-    <StackPanel Margin="15" Spacing="10" MaxWidth="400" VerticalAlignment="Top">
-        <TextBlock Text="Название" />
-        <TextBox Text="{Binding Entity.Name}" />
-        <TextBlock Text="Налоговый режим" />
-        <ComboBox ItemsSource="{Binding TaxRegimeOptions}" SelectedItem="{Binding Entity.TaxRegime}" HorizontalAlignment="Stretch">
-            <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="models:TaxRegime">
-                    <TextBlock Text="{Binding Converter={x:Static converters:EnumTitleConverter.Instance}}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <views:CardButtons Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
-    </StackPanel>
+    <DockPanel>
+        <views:CardButtons DockPanel.Dock="Top" Margin="8" Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
+        <Border Classes="card" Margin="8,0,8,8" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Название" />
+                <TextBox Text="{Binding Entity.Name}" />
+                <TextBlock Text="Налоговый режим" />
+                <ComboBox ItemsSource="{Binding TaxRegimeOptions}" SelectedItem="{Binding Entity.TaxRegime}" HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:TaxRegime">
+                            <TextBlock Text="{Binding Converter={x:Static converters:EnumTitleConverter.Instance}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+    </DockPanel>
 </UserControl>

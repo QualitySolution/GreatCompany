@@ -3,8 +3,8 @@
              x:Class="GreatCompany.Views.CardButtons"
              x:CompileBindings="True"
              x:Name="root">
-    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-        <Button Content="Сохранить" Command="{Binding #root.Save}" />
+    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+        <Button Classes="primary" Content="Сохранить" Command="{Binding #root.Save}" />
         <Button Content="Отмена" Command="{Binding #root.Cancel}" />
     </StackPanel>
 </UserControl>

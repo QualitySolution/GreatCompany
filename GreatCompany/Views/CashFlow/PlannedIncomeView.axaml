@@ -5,22 +5,27 @@
              xmlns:widgets="clr-namespace:QS.Views.Control;assembly=QS.Project.Avalonia"
              x:Class="GreatCompany.Views.CashFlow.PlannedIncomeView"
              x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
              x:DataType="vm:PlannedIncomeViewModel">
-    <StackPanel Margin="15" Spacing="10" MaxWidth="460" VerticalAlignment="Top">
-        <TextBlock Text="Дата" />
-        <CalendarDatePicker SelectedDate="{Binding Entity.Date}" HorizontalAlignment="Stretch" />
-        <TextBlock Text="Назначение" />
-        <TextBox Text="{Binding Entity.Purpose}" AcceptsReturn="True" Height="60" TextWrapping="Wrap" />
-        <TextBlock Text="Сумма" />
-        <NumericUpDown Value="{Binding Entity.Cost}" Minimum="0" FormatString="0.00" />
-        <TextBlock Text="Сумма НДС" />
-        <NumericUpDown Value="{Binding Entity.Vat}" Minimum="0" FormatString="0.00" />
-        <TextBlock Text="Счёт" />
-        <widgets:EntityEntryView ViewModel="{Binding AccountEntry}" />
-        <TextBlock Text="Проект" />
-        <widgets:EntityEntryView ViewModel="{Binding ProjectEntry}" />
-        <TextBlock Text="Статья" />
-        <widgets:EntityEntryView ViewModel="{Binding IncomeArticleEntry}" />
-        <views:CardButtons Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
-    </StackPanel>
+    <DockPanel>
+        <views:CardButtons DockPanel.Dock="Top" Margin="8" Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
+        <Border Classes="card" Margin="8,0,8,8" Width="460" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Дата" />
+                <CalendarDatePicker SelectedDate="{Binding Entity.Date}" HorizontalAlignment="Stretch" />
+                <TextBlock Text="Назначение" />
+                <TextBox Text="{Binding Entity.Purpose}" AcceptsReturn="True" Height="60" TextWrapping="Wrap" />
+                <TextBlock Text="Сумма" />
+                <NumericUpDown Value="{Binding Entity.Cost}" Minimum="0" FormatString="0.00" />
+                <TextBlock Text="Сумма НДС" />
+                <NumericUpDown Value="{Binding Entity.Vat}" Minimum="0" FormatString="0.00" />
+                <TextBlock Text="Счёт" />
+                <widgets:EntityEntryView ViewModel="{Binding AccountEntry}" />
+                <TextBlock Text="Проект" />
+                <widgets:EntityEntryView ViewModel="{Binding ProjectEntry}" />
+                <TextBlock Text="Статья" />
+                <widgets:EntityEntryView ViewModel="{Binding IncomeArticleEntry}" />
+            </StackPanel>
+        </Border>
+    </DockPanel>
 </UserControl>

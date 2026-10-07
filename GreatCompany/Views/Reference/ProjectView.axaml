@@ -5,12 +5,17 @@
              xmlns:widgets="clr-namespace:QS.Views.Control;assembly=QS.Project.Avalonia"
              x:Class="GreatCompany.Views.Reference.ProjectView"
              x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
              x:DataType="vm:ProjectViewModel">
-    <StackPanel Margin="15" Spacing="10" MaxWidth="400" VerticalAlignment="Top">
-        <TextBlock Text="Название" />
-        <TextBox Text="{Binding Entity.Name}" />
-        <TextBlock Text="Подразделение" />
-        <widgets:EntityEntryView ViewModel="{Binding DivisionEntry}" />
-        <views:CardButtons Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
-    </StackPanel>
+    <DockPanel>
+        <views:CardButtons DockPanel.Dock="Top" Margin="8" Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
+        <Border Classes="card" Margin="8,0,8,8" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Название" />
+                <TextBox Text="{Binding Entity.Name}" />
+                <TextBlock Text="Подразделение" />
+                <widgets:EntityEntryView ViewModel="{Binding DivisionEntry}" />
+            </StackPanel>
+        </Border>
+    </DockPanel>
 </UserControl>

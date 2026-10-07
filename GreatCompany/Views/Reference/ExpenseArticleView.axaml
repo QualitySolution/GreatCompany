@@ -4,10 +4,15 @@
              xmlns:views="clr-namespace:GreatCompany.Views"
              x:Class="GreatCompany.Views.Reference.ExpenseArticleView"
              x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
              x:DataType="vm:ExpenseArticleViewModel">
-    <StackPanel Margin="15" Spacing="10" MaxWidth="400" VerticalAlignment="Top">
-        <TextBlock Text="Название" />
-        <TextBox Text="{Binding Entity.Name}" />
-        <views:CardButtons Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
-    </StackPanel>
+    <DockPanel>
+        <views:CardButtons DockPanel.Dock="Top" Margin="8" Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
+        <Border Classes="card" Margin="8,0,8,8" Width="400" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Название" />
+                <TextBox Text="{Binding Entity.Name}" />
+            </StackPanel>
+        </Border>
+    </DockPanel>
 </UserControl>

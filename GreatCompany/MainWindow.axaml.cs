@@ -6,6 +6,7 @@ using FluentAvalonia.UI.Windowing;
 using GreatCompany.Journal.ViewModels.CashFlow;
 using GreatCompany.Journal.ViewModels.Reference;
 using GreatCompany.Journal.ViewModels.Templates;
+using GreatCompany.ViewModels.Analytics;
 using QS.Navigation;
 using QS.Project.Versioning.ViewModels;
 using System.ComponentModel;
@@ -124,6 +125,8 @@ public partial class MainWindow : FAAppWindow {
 		RegMenuItem<PlannedExpenseJournalViewModel>(plannedExpensesMenuItem);
 		RegMenuItem<ActualExpenseJournalViewModel>(actualExpensesMenuItem);
 		RegMenuItem<ActualTransferJournalViewModel>(actualTransfersMenuItem);
+
+		RegMenuItem<DivisionDetailsViewModel>(divisionDetailsMenuItem);
 
 		RegMenuItem<AccrualTemplateJournalViewModel>(accrualTemplatesMenuItem);
 		RegMenuItem<PaymentTemplateJournalViewModel>(paymentTemplatesMenuItem);

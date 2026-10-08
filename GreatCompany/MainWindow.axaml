@@ -136,6 +136,18 @@
                         </fa:FANavigationViewItem>
                     </fa:FANavigationViewItem.MenuItems>
                 </fa:FANavigationViewItem>
+                <fa:FANavigationViewItem x:Name="analyticsMenuItem" Content="Аналитика">
+                    <fa:FANavigationViewItem.IconSource>
+                        <fi:FluentIconSource Icon="DataBarVertical" />
+                    </fa:FANavigationViewItem.IconSource>
+                    <fa:FANavigationViewItem.MenuItems>
+                        <fa:FANavigationViewItem x:Name="divisionDetailsMenuItem" Content="Детализация по подразделению">
+                            <fa:FANavigationViewItem.IconSource>
+                                <fi:FluentIconSource Icon="ChartMultiple" />
+                            </fa:FANavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem>
+                    </fa:FANavigationViewItem.MenuItems>
+                </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem x:Name="templatesMenuItem" Content="Шаблоны">
                     <fa:FANavigationViewItem.IconSource>
                         <fi:FluentIconSource Icon="Apps" />

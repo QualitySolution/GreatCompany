@@ -1,0 +1,6 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:scottplot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
+             x:Class="GreatCompany.Views.Analytics.AnalyticsChart">
+    <scottplot:AvaPlot x:Name="plot" />
+</UserControl>

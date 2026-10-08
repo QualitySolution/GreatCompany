@@ -20,7 +20,11 @@
                 </ComboBox>
             </WrapPanel>
         </StackPanel>
-        <!-- графики встанут сюда же, над или рядом с таблицей -->
-        <views:AnalyticsGrid Table="{Binding Table}" AmountFormat="{Binding AmountFormat}" Margin="8,0,8,8" />
+        <!-- высоту графика можно менять, потянув разделитель -->
+        <Grid RowDefinitions="320,Auto,*" Margin="8,0,8,8">
+            <views:AnalyticsChart Grid.Row="0" Chart="{Binding Chart}" />
+            <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" ResizeDirection="Rows" />
+            <views:AnalyticsGrid Grid.Row="2" Table="{Binding Table}" AmountFormat="{Binding AmountFormat}" />
+        </Grid>
     </DockPanel>
 </UserControl>

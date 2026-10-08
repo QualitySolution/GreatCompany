@@ -23,6 +23,13 @@ public class IncomeExpenseViewModel : AnalyticsViewModelBase {
 	IncomeExpenseMode mode;
 	public IncomeExpenseMode Mode { get => mode; set => SetAndRefresh(ref mode, value); }
 
-	protected override CashFlowTable BuildTable(ISession session) =>
-		IncomeExpenseTable.Build(session, FromMonth, ToMonth, WithVat, Mode == IncomeExpenseMode.Rolling3);
+	ChartData chart = ChartData.Empty;
+	/// <summary>те же цифры, что в таблице: приход по подразделениям, общий приход и общий расход</summary>
+	public ChartData Chart { get => chart; private set => SetField(ref chart, value); }
+
+	protected override CashFlowTable BuildTable(ISession session) {
+		var report = IncomeExpenseTable.Build(session, FromMonth, ToMonth, WithVat, Mode == IncomeExpenseMode.Rolling3);
+		Chart = report.Chart;
+		return report.Table;
+	}
 }

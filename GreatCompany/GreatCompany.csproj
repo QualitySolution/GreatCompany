@@ -31,6 +31,7 @@
     <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.1.343" />
     <PackageReference Include="NLog" Version="6.1.1" />
     <PackageReference Include="ReactiveUI.Avalonia" Version="12.1.2" />
+    <PackageReference Include="ScottPlot.Avalonia" Version="5.1.59" />
   </ItemGroup>
 
   <ItemGroup>

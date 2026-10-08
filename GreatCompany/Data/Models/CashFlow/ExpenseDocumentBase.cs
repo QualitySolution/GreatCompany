@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GreatCompany.Data.Taxes;
 using QS.DomainModel.Entity;
 using QS.Validation;
 
 namespace GreatCompany.Data.Models;
 
-public abstract class ExpenseDocumentBase : PropertyChangedBase, IDomainObject {
+public abstract class ExpenseDocumentBase : PropertyChangedBase, IDomainObject, IVatDocument, IValidatableObject {
 	public virtual int Id { get; set; }
 
 	string purpose = "";
@@ -51,11 +52,23 @@ public abstract class ExpenseDocumentBase : PropertyChangedBase, IDomainObject {
 	[RequiredField]
 	public virtual ExpenseArticle ExpenseArticle { get => expenseArticle; set => SetField(ref expenseArticle, value); }
 
+	public virtual DateTime? TaxDate => null;
+
+	public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext) {
+		// без счёта режима не знаем, на это ругается RequiredField
+		if(Account == null)
+			yield break;
+
+		var error = TaxCalculator.CheckVat(Account.TaxRegime, Cost, Vat, TaxDate);
+		if(error != null)
+			yield return new ValidationResult(error, new[] { nameof(Vat) });
+	}
+
 	public virtual void FillFrom(ExpenseDocumentBase source) {
 		Purpose = source.Purpose;
+		Account = source.Account;
 		Cost = source.Cost;
 		Vat = source.Vat;
-		Account = source.Account;
 		ExpenseArticle = source.ExpenseArticle;
 		Project = source.Project;
 		Division = source.Division;

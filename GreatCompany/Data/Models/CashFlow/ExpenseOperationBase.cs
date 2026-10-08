@@ -11,5 +11,7 @@ public abstract class ExpenseOperationBase : ExpenseDocumentBase {
 	[PropertyChangedAlso(nameof(Title))]
 	public virtual DateTime? Date { get => date; set => SetField(ref date, value); }
 
+	public override DateTime? TaxDate => Date;
+
 	public override string Title => $"{Purpose} от {Date:dd.MM.yyyy}";
 }

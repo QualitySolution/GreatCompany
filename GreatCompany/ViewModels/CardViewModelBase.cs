@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using ReactiveUI.Primitives;
+using GreatCompany.Data.Models;
+using GreatCompany.Data.Taxes;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
@@ -22,6 +24,22 @@ public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEn
 
 		if(Entity is INotifyPropertyChanged entity)
 			entity.PropertyChanged += (_, _) => HasChanges = true;
+
+		if(Entity is IVatDocument vatDocument && Entity is INotifyPropertyChanged vatSource)
+			vatSource.PropertyChanged += (_, e) => OnVatInputChanged(vatDocument, e.PropertyName);
+	}
+
+	/// <summary>у документа без НДС по налоговому режиму счёта поле НДС не показывается</summary>
+	public bool ShowVat => Entity is IVatDocument document && TaxCalculator.HasVat(document.Account?.TaxRegime);
+
+	// сумма всегда с НДС, поэтому НДС пересчитывается при смене суммы, счёта (режима) или даты (ставки).
+	// вручную его можно поправить только после, в пределах допуска, это проверяет валидация документа
+	void OnVatInputChanged(IVatDocument document, string? propertyName) {
+		if(propertyName is not (nameof(IVatDocument.Cost) or nameof(IVatDocument.Account) or "Date"))
+			return;
+
+		document.Vat = TaxCalculator.CalculateVat(document.Account?.TaxRegime, document.Cost, document.TaxDate);
+		OnPropertyChanged(nameof(ShowVat));
 	}
 
 	// в библиотечном диалоге Entity - поле, а вьюхи биндятся на свойства

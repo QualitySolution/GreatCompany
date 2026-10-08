@@ -5,6 +5,11 @@
              x:DataType="journal:PaymentTemplateJournalNode">
     <DataGrid x:Name="dataGrid" IsReadOnly="True" AutoGenerateColumns="False"
               GridLinesVisibility="All" CanUserResizeColumns="True" CanUserSortColumns="False">
+        <DataGrid.Styles>
+            <Style Selector="DataGridRow" x:CompileBindings="False">
+                <Setter Property="Foreground" Value="{Binding RowColor}" />
+            </Style>
+        </DataGrid.Styles>
         <DataGrid.Columns>
             <DataGridTextColumn Header="Код" Binding="{Binding Id, Mode=OneWay}" Width="60" CellStyleClasses="number" />
             <DataGridTextColumn Header="Назначение" Binding="{Binding Purpose, Mode=OneWay}" Width="3*" MinWidth="140" />

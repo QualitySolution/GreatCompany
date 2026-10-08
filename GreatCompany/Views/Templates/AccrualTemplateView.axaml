@@ -23,6 +23,7 @@
                 <widgets:EntityEntryView ViewModel="{Binding ProjectEntry}" />
                 <TextBlock Text="Статья" />
                 <widgets:EntityEntryView ViewModel="{Binding IncomeArticleEntry}" />
+                <CheckBox Content="Отключён" IsChecked="{Binding Entity.IsDisabled}" />
             </StackPanel>
         </Border>
     </DockPanel>

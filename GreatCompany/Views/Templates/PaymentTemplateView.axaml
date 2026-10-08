@@ -25,6 +25,7 @@
                 <widgets:EntityEntryView ViewModel="{Binding ProjectEntry}" />
                 <TextBlock Text="Подразделение" />
                 <widgets:EntityEntryView ViewModel="{Binding DivisionEntry}" />
+                <CheckBox Content="Отключён" IsChecked="{Binding Entity.IsDisabled}" />
             </StackPanel>
         </Border>
     </DockPanel>

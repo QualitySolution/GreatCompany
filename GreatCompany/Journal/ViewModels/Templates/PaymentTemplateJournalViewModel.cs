@@ -17,10 +17,14 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 		IUnitOfWorkFactory unitOfWorkFactory,
 		INavigationManager navigationManager,
 		IEntityChangeWatcher changeWatcher,
+		Func<IJournalViewModel, TemplateFilterViewModel> filterFactory,
 		IDeleteEntityService? deleteEntityService = null,
 		ICurrentPermissionService? currentPermissionService = null)
 		: base(unitOfWorkFactory, navigationManager, changeWatcher, deleteEntityService, currentPermissionService) {
+		JournalFilter = Filter = filterFactory(this);
 	}
+
+	public TemplateFilterViewModel Filter { get; }
 
 	protected override IQueryOver<PaymentTemplate> ItemsQuery(IUnitOfWork uow) {
 		PaymentTemplate templateAlias = null!;
@@ -30,7 +34,7 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 		ExpenseArticle articleAlias = null!;
 		PaymentTemplateJournalNode resultAlias = null!;
 
-		return uow.Session.QueryOver(() => templateAlias)
+		var query = uow.Session.QueryOver(() => templateAlias)
 			.JoinAlias(() => templateAlias.Account, () => accountAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => templateAlias.Division, () => divisionAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => templateAlias.Project, () => projectAlias, JoinType.LeftOuterJoin)
@@ -38,7 +42,12 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 			.Where(GetSearchCriterion(
 				() => templateAlias.Id,
 				() => templateAlias.Purpose,
-				() => projectAlias.Name))
+				() => projectAlias.Name));
+
+		if(!Filter.ShowDisabled)
+			query.Where(() => !templateAlias.IsDisabled);
+
+		return query
 			.SelectList(list => list
 				.Select(() => templateAlias.Id).WithAlias(() => resultAlias.Id)
 				.Select(() => templateAlias.Purpose).WithAlias(() => resultAlias.Purpose)
@@ -47,7 +56,8 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 				.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 				.Select(() => divisionAlias.Name).WithAlias(() => resultAlias.DivisionName)
 				.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
-				.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName))
+				.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName)
+				.Select(() => templateAlias.IsDisabled).WithAlias(() => resultAlias.IsDisabled))
 			.OrderBy(() => templateAlias.Purpose).Asc
 			.TransformUsing(Transformers.AliasToBean<PaymentTemplateJournalNode>());
 	}
@@ -62,4 +72,6 @@ public class PaymentTemplateJournalNode {
 	public string? DivisionName { get; set; }
 	public string? ProjectName { get; set; }
 	public string? ArticleName { get; set; }
+	public bool IsDisabled { get; set; }
+	public string RowColor => IsDisabled ? "gray" : "black";
 }

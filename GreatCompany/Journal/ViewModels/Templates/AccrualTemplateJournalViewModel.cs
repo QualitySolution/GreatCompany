@@ -17,10 +17,14 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 		IUnitOfWorkFactory unitOfWorkFactory,
 		INavigationManager navigationManager,
 		IEntityChangeWatcher changeWatcher,
+		Func<IJournalViewModel, TemplateFilterViewModel> filterFactory,
 		IDeleteEntityService? deleteEntityService = null,
 		ICurrentPermissionService? currentPermissionService = null)
 		: base(unitOfWorkFactory, navigationManager, changeWatcher, deleteEntityService, currentPermissionService) {
+		JournalFilter = Filter = filterFactory(this);
 	}
+
+	public TemplateFilterViewModel Filter { get; }
 
 	protected override IQueryOver<AccrualTemplate> ItemsQuery(IUnitOfWork uow) {
 		AccrualTemplate templateAlias = null!;
@@ -29,14 +33,19 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 		IncomeArticle articleAlias = null!;
 		AccrualTemplateJournalNode resultAlias = null!;
 
-		return uow.Session.QueryOver(() => templateAlias)
+		var query = uow.Session.QueryOver(() => templateAlias)
 			.JoinAlias(() => templateAlias.Account, () => accountAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => templateAlias.Project, () => projectAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => templateAlias.IncomeArticle, () => articleAlias, JoinType.LeftOuterJoin)
 			.Where(GetSearchCriterion(
 				() => templateAlias.Id,
 				() => templateAlias.Purpose,
-				() => projectAlias.Name))
+				() => projectAlias.Name));
+
+		if(!Filter.ShowDisabled)
+			query.Where(() => !templateAlias.IsDisabled);
+
+		return query
 			.SelectList(list => list
 				.Select(() => templateAlias.Id).WithAlias(() => resultAlias.Id)
 				.Select(() => templateAlias.Purpose).WithAlias(() => resultAlias.Purpose)
@@ -44,7 +53,8 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 				.Select(() => templateAlias.Vat).WithAlias(() => resultAlias.Vat)
 				.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 				.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
-				.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName))
+				.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName)
+				.Select(() => templateAlias.IsDisabled).WithAlias(() => resultAlias.IsDisabled))
 			.OrderBy(() => templateAlias.Purpose).Asc
 			.TransformUsing(Transformers.AliasToBean<AccrualTemplateJournalNode>());
 	}
@@ -58,4 +68,6 @@ public class AccrualTemplateJournalNode {
 	public string? AccountName { get; set; }
 	public string? ProjectName { get; set; }
 	public string? ArticleName { get; set; }
+	public bool IsDisabled { get; set; }
+	public string RowColor => IsDisabled ? "gray" : "black";
 }

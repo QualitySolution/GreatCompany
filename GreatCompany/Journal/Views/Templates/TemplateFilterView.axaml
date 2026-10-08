@@ -1,0 +1,10 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:journal="clr-namespace:GreatCompany.Journal.ViewModels.Templates"
+             x:Class="GreatCompany.Journal.Views.Templates.TemplateFilterView"
+             x:CompileBindings="True"
+             x:DataType="journal:TemplateFilterViewModel">
+    <WrapPanel Orientation="Horizontal" Margin="5">
+        <CheckBox Content="Показать отключённые" IsChecked="{Binding ShowDisabled}" />
+    </WrapPanel>
+</UserControl>

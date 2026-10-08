@@ -3,30 +3,14 @@
              xmlns:vm="clr-namespace:GreatCompany.ViewModels.Analytics"
              xmlns:analytics="clr-namespace:GreatCompany.Data.Analytics"
              xmlns:converters="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
+             xmlns:views="clr-namespace:GreatCompany.Views.Analytics"
              x:Class="GreatCompany.Views.Analytics.DivisionDetailsView"
              x:CompileBindings="True"
              Background="{DynamicResource QsBrushCanvas}"
              x:DataType="vm:DivisionDetailsViewModel">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Margin="8">
-            <WrapPanel Orientation="Horizontal">
-                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,8" VerticalAlignment="Center">
-                    <TextBlock Text="с" VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{x:Static vm:DivisionDetailsViewModel.Months}" SelectedIndex="{Binding FromMonthIndex}" Width="120" />
-                    <NumericUpDown Value="{Binding FromYear}" Minimum="2000" Maximum="2100" Increment="1" FormatString="0" Width="120" />
-                    <TextBlock Text="по" VerticalAlignment="Center" Margin="8,0,0,0" />
-                    <ComboBox ItemsSource="{x:Static vm:DivisionDetailsViewModel.Months}" SelectedIndex="{Binding ToMonthIndex}" Width="120" />
-                    <NumericUpDown Value="{Binding ToYear}" Minimum="2000" Maximum="2100" Increment="1" FormatString="0" Width="120" />
-                </StackPanel>
-                <ComboBox ItemsSource="{x:Static vm:DivisionDetailsViewModel.AmountFormats}" SelectedItem="{Binding AmountFormat}" Width="140" Margin="16,0,8,8">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:AmountFormat">
-                            <TextBlock Text="{Binding Converter={x:Static converters:EnumTitleConverter.Instance}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <CheckBox Content="С НДС" IsChecked="{Binding WithVat}" Margin="0,0,0,8" />
-            </WrapPanel>
+            <views:AnalyticsPeriodBar />
             <WrapPanel Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,16,8" VerticalAlignment="Center">
                     <TextBlock Text="Подразделение:" VerticalAlignment="Center" />
@@ -61,7 +45,6 @@
                 </ComboBox>
             </WrapPanel>
         </StackPanel>
-        <DataGrid x:Name="dataGrid" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="All"
-                  CanUserResizeColumns="True" CanUserSortColumns="False" Margin="8,0,8,8" />
+        <views:AnalyticsGrid Table="{Binding Table}" AmountFormat="{Binding AmountFormat}" Margin="8,0,8,8" />
     </DockPanel>
 </UserControl>

@@ -35,11 +35,12 @@ public record CashFlowFilter(
 	DateTime ToMonth,
 	bool WithVat);
 
-/// <param name="Values">суммы по колонкам, последняя - итог строки</param>
-public record CashFlowRow(string Title, decimal[] Values);
+/// <param name="Values">суммы по колонкам таблицы</param>
+/// <param name="IsTotal">итоговая строка, выделяется</param>
+public record CashFlowRow(string Title, decimal[] Values, bool IsTotal = false);
 
-/// <param name="Columns">заголовки колонок с суммами без итоговой</param>
-/// <param name="Rows">строки по месяцам, последняя - итог за период</param>
+/// <param name="Columns">заголовки колонок с суммами, по одному на каждое значение строки</param>
+/// <param name="Rows">строки по месяцам, в конце может быть итоговая</param>
 public record CashFlowTable(IReadOnlyList<string> Columns, IReadOnlyList<CashFlowRow> Rows) {
 	public static CashFlowTable Empty { get; } = new(Array.Empty<string>(), Array.Empty<CashFlowRow>());
 
@@ -76,9 +77,9 @@ public record CashFlowTable(IReadOnlyList<string> Columns, IReadOnlyList<CashFlo
 				total[i] += values[i];
 			rows.Add(new CashFlowRow(MonthTitle(month), values));
 		}
-		rows.Add(new CashFlowRow("Итого", total));
+		rows.Add(new CashFlowRow("Итого", total, IsTotal: true));
 
-		return new CashFlowTable(columns.Select(id => names(id)).ToList(), rows);
+		return new CashFlowTable(columns.Select(id => names(id)).Append("Итого").ToList(), rows);
 	}
 
 	record Entry(DateTime Month, int ColumnId, decimal Amount);
@@ -136,7 +137,8 @@ public record CashFlowTable(IReadOnlyList<string> Columns, IReadOnlyList<CashFlo
 
 	static readonly CultureInfo Russian = CultureInfo.GetCultureInfo("ru-RU");
 
-	static string MonthTitle(DateTime month) {
+	/// <summary>«Сентябрь 2026»</summary>
+	internal static string MonthTitle(DateTime month) {
 		var name = Russian.DateTimeFormat.MonthNames[month.Month - 1];
 		return $"{char.ToUpper(name[0], Russian)}{name[1..]} {month.Year}";
 	}

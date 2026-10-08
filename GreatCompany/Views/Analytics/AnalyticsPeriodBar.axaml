@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.ViewModels.Analytics"
+             xmlns:converters="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
+             x:Class="GreatCompany.Views.Analytics.AnalyticsPeriodBar"
+             x:CompileBindings="True"
+             x:DataType="vm:AnalyticsViewModelBase">
+    <!-- общая строка аналитики: период, вид сумм и НДС -->
+    <WrapPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,8" VerticalAlignment="Center">
+            <TextBlock Text="с" VerticalAlignment="Center" />
+            <ComboBox ItemsSource="{x:Static vm:AnalyticsViewModelBase.Months}" SelectedIndex="{Binding FromMonthIndex}" Width="120" />
+            <NumericUpDown Value="{Binding FromYear}" Minimum="2000" Maximum="2100" Increment="1" FormatString="0" Width="120" />
+            <TextBlock Text="по" VerticalAlignment="Center" Margin="8,0,0,0" />
+            <ComboBox ItemsSource="{x:Static vm:AnalyticsViewModelBase.Months}" SelectedIndex="{Binding ToMonthIndex}" Width="120" />
+            <NumericUpDown Value="{Binding ToYear}" Minimum="2000" Maximum="2100" Increment="1" FormatString="0" Width="120" />
+        </StackPanel>
+        <ComboBox ItemsSource="{x:Static vm:AnalyticsViewModelBase.AmountFormats}" SelectedItem="{Binding AmountFormat}" Width="140" Margin="16,0,8,8">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:AmountFormat">
+                    <TextBlock Text="{Binding Converter={x:Static converters:EnumTitleConverter.Instance}}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <CheckBox Content="С НДС" IsChecked="{Binding WithVat}" Margin="0,0,0,8" />
+    </WrapPanel>
+</UserControl>

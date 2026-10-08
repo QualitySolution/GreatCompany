@@ -126,6 +126,7 @@ public partial class MainWindow : FAAppWindow {
 		RegMenuItem<ActualExpenseJournalViewModel>(actualExpensesMenuItem);
 		RegMenuItem<ActualTransferJournalViewModel>(actualTransfersMenuItem);
 
+		RegMenuItem<IncomeExpenseViewModel>(incomeExpenseMenuItem);
 		RegMenuItem<DivisionDetailsViewModel>(divisionDetailsMenuItem);
 
 		RegMenuItem<AccrualTemplateJournalViewModel>(accrualTemplatesMenuItem);

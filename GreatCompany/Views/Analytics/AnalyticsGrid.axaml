@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GreatCompany.Views.Analytics.AnalyticsGrid">
+    <!-- таблица вне журнала, поэтому его стили ячеек повторены здесь: числа справа, отступы как в журналах -->
+    <UserControl.Resources>
+        <x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="DataGridCell.number TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+        <Style Selector="DataGridCell TextBlock#CellTextBlock">
+            <Setter Property="Margin" Value="8,0,8,0" />
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Padding" Value="8,0,8,0" />
+        </Style>
+    </UserControl.Styles>
+    <DataGrid x:Name="grid" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="All"
+              CanUserResizeColumns="True" CanUserSortColumns="False" />
+</UserControl>

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.ViewModels.Analytics"
+             xmlns:converters="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
+             xmlns:views="clr-namespace:GreatCompany.Views.Analytics"
+             x:Class="GreatCompany.Views.Analytics.IncomeExpenseView"
+             x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
+             x:DataType="vm:IncomeExpenseViewModel">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="8">
+            <views:AnalyticsPeriodBar />
+            <WrapPanel Orientation="Horizontal">
+                <ComboBox ItemsSource="{x:Static vm:IncomeExpenseViewModel.Modes}" SelectedItem="{Binding Mode}" Width="200" Margin="0,0,8,8">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:IncomeExpenseMode">
+                            <TextBlock Text="{Binding Converter={x:Static converters:EnumTitleConverter.Instance}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </WrapPanel>
+        </StackPanel>
+        <!-- графики встанут сюда же, над или рядом с таблицей -->
+        <views:AnalyticsGrid Table="{Binding Table}" AmountFormat="{Binding AmountFormat}" Margin="8,0,8,8" />
+    </DockPanel>
+</UserControl>

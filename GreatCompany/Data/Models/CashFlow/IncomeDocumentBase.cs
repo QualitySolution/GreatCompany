@@ -31,10 +31,21 @@ public abstract class IncomeDocumentBase : PropertyChangedBase, IDomainObject, I
 	[RequiredField]
 	public virtual Account Account { get => account; set => SetField(ref account, value); }
 
-	Project project = null!;
-	[Display(Name = "Проект")]
+	Division division = null!;
+	[Display(Name = "Подразделение")]
 	[RequiredField]
-	public virtual Project Project { get => project; set => SetField(ref project, value); }
+	public virtual Division Division { get => division; set => SetField(ref division, value); }
+
+	Project? project;
+	[Display(Name = "Проект")]
+	public virtual Project? Project {
+		get => project;
+		// при выборе проекта подставляем его подразделение, поменять его после можно
+		set {
+			if(SetField(ref project, value) && value != null)
+				Division = value.Division;
+		}
+	}
 
 	IncomeArticle incomeArticle = null!;
 	[Display(Name = "Статья дохода")]
@@ -59,6 +70,7 @@ public abstract class IncomeDocumentBase : PropertyChangedBase, IDomainObject, I
 		Cost = source.Cost;
 		Vat = source.Vat;
 		Project = source.Project;
+		Division = source.Division;
 		IncomeArticle = source.IncomeArticle;
 	}
 }

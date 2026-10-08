@@ -37,12 +37,14 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 		AccrualTemplate templateAlias = null!;
 		Account accountAlias = null!;
 		Project projectAlias = null!;
+		Division divisionAlias = null!;
 		IncomeArticle articleAlias = null!;
 		AccrualTemplateJournalNode resultAlias = null!;
 
 		var query = uow.Session.QueryOver(() => templateAlias)
 			.JoinAlias(() => templateAlias.Account, () => accountAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => templateAlias.Project, () => projectAlias, JoinType.LeftOuterJoin)
+			.JoinAlias(() => templateAlias.Division, () => divisionAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => templateAlias.IncomeArticle, () => articleAlias, JoinType.LeftOuterJoin)
 			.Where(GetSearchCriterion(
 				() => templateAlias.Id,
@@ -60,6 +62,7 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 				.Select(() => templateAlias.Vat).WithAlias(() => resultAlias.Vat)
 				.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 				.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
+					.Select(() => divisionAlias.Name).WithAlias(() => resultAlias.DivisionName)
 				.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName)
 				.Select(() => templateAlias.IsDisabled).WithAlias(() => resultAlias.IsDisabled))
 			.OrderBy(() => templateAlias.Purpose).Asc
@@ -74,6 +77,7 @@ public class AccrualTemplateJournalNode {
 	public decimal Vat { get; set; }
 	public string? AccountName { get; set; }
 	public string? ProjectName { get; set; }
+	public string? DivisionName { get; set; }
 	public string? ArticleName { get; set; }
 	public bool IsDisabled { get; set; }
 	public string RowColor => IsDisabled ? "gray" : "black";

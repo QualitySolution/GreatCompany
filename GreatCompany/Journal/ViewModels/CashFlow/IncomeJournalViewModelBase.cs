@@ -31,12 +31,14 @@ public abstract class IncomeJournalViewModelBase<TEntity, TEntityViewModel>
 		TEntity incomeAlias = null!;
 		Account accountAlias = null!;
 		Project projectAlias = null!;
+		Division divisionAlias = null!;
 		IncomeArticle articleAlias = null!;
 		IncomeJournalNode resultAlias = null!;
 
 		var query = uow.Session.QueryOver(() => incomeAlias)
 			.JoinAlias(() => incomeAlias.Account, () => accountAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => incomeAlias.Project, () => projectAlias, JoinType.LeftOuterJoin)
+			.JoinAlias(() => incomeAlias.Division, () => divisionAlias, JoinType.LeftOuterJoin)
 			.JoinAlias(() => incomeAlias.IncomeArticle, () => articleAlias, JoinType.LeftOuterJoin)
 			.Where(GetSearchCriterion(
 				() => incomeAlias.Id,
@@ -53,6 +55,7 @@ public abstract class IncomeJournalViewModelBase<TEntity, TEntityViewModel>
 					.Select(() => incomeAlias.Vat).WithAlias(() => resultAlias.Vat)
 					.Select(() => accountAlias.Name).WithAlias(() => resultAlias.AccountName)
 					.Select(() => projectAlias.Name).WithAlias(() => resultAlias.ProjectName)
+					.Select(() => divisionAlias.Name).WithAlias(() => resultAlias.DivisionName)
 					.Select(() => articleAlias.Name).WithAlias(() => resultAlias.ArticleName);
 				if(plannedId != null)
 					list.Select(plannedId).WithAlias(() => resultAlias.PlannedId);
@@ -77,6 +80,7 @@ public class IncomeJournalNode {
 	public decimal Vat { get; set; }
 	public string? AccountName { get; set; }
 	public string? ProjectName { get; set; }
+	public string? DivisionName { get; set; }
 	public string? ArticleName { get; set; }
 	public int? PlannedId { get; set; }
 

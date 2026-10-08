@@ -13,6 +13,7 @@
             <DataGridTextColumn Header="НДС" Binding="{Binding Vat, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
             <DataGridTextColumn Header="Счёт" Binding="{Binding AccountName, Mode=OneWay}" Width="*" MinWidth="80" />
             <DataGridTextColumn Header="Проект" Binding="{Binding ProjectName, Mode=OneWay}" Width="1.5*" MinWidth="90" />
+            <DataGridTextColumn Header="Подразделение" Binding="{Binding DivisionName, Mode=OneWay}" Width="1.5*" MinWidth="90" />
             <DataGridTextColumn Header="Статья" Binding="{Binding ArticleName, Mode=OneWay}" Width="2*" MinWidth="100" />
         </DataGrid.Columns>
     </DataGrid>

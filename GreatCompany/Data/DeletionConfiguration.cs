@@ -5,7 +5,7 @@ namespace GreatCompany.Data;
 
 /// <summary>
 /// обязательная ссылка означает удаление зависимого документа, необязательная - очистку ссылки.
-/// расход всегда принадлежит подразделению и удаляется вместе с ним.
+/// приход и расход всегда принадлежат подразделению и удаляются вместе с ним.
 /// проект перечислен раньше документов, план раньше факта - ссылка у документа очищается до его удаления
 /// </summary>
 public static class DeletionConfiguration {
@@ -13,14 +13,17 @@ public static class DeletionConfiguration {
 		configuration.AddHibernateDeleteInfo<Division>()
 			.AddDeleteDependence<Project>(x => x.Division)
 			.AddClearDependence<Division>(x => x.ParentDivision)
+			.AddDeleteDependence<PlannedIncome>(x => x.Division)
+			.AddDeleteDependence<ActualIncome>(x => x.Division)
+			.AddDeleteDependence<AccrualTemplate>(x => x.Division)
 			.AddDeleteDependence<PlannedExpense>(x => x.Division)
 			.AddDeleteDependence<ActualExpense>(x => x.Division)
 			.AddDeleteDependence<PaymentTemplate>(x => x.Division);
 
 		configuration.AddHibernateDeleteInfo<Project>()
-			.AddDeleteDependence<PlannedIncome>(x => x.Project)
-			.AddDeleteDependence<ActualIncome>(x => x.Project)
-			.AddDeleteDependence<AccrualTemplate>(x => x.Project)
+			.AddClearDependence<PlannedIncome>(x => x.Project)
+			.AddClearDependence<ActualIncome>(x => x.Project)
+			.AddClearDependence<AccrualTemplate>(x => x.Project)
 			.AddClearDependence<PlannedExpense>(x => x.Project)
 			.AddClearDependence<ActualExpense>(x => x.Project)
 			.AddClearDependence<PaymentTemplate>(x => x.Project);

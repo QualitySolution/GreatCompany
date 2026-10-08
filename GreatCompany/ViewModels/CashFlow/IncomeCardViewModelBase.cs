@@ -26,6 +26,11 @@ public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEnti
 			.UseViewModelDialog<ProjectViewModel>()
 			.Finish();
 
+		DivisionEntry = builder.ForProperty(x => x.Division)
+			.UseViewModelJournalAndAutocompleter<DivisionJournalViewModel>()
+			.UseViewModelDialog<DivisionViewModel>()
+			.Finish();
+
 		IncomeArticleEntry = builder.ForProperty(x => x.IncomeArticle)
 			.UseViewModelJournalAndAutocompleter<IncomeArticleJournalViewModel>()
 			.UseViewModelDialog<IncomeArticleViewModel>()
@@ -34,6 +39,7 @@ public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEnti
 
 	public IEntityEntryViewModel AccountEntry { get; }
 	public IEntityEntryViewModel ProjectEntry { get; }
+	public IEntityEntryViewModel DivisionEntry { get; }
 	public IEntityEntryViewModel IncomeArticleEntry { get; }
 
 	/// <summary>

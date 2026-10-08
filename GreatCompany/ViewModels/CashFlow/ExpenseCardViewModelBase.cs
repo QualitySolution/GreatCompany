@@ -1,4 +1,5 @@
 ﻿using GreatCompany.Data.Models;
+using GreatCompany.Data.Taxes;
 using GreatCompany.Journal.ViewModels.Reference;
 using GreatCompany.ViewModels.Reference;
 using QS.DomainModel.UoW;
@@ -35,6 +36,12 @@ public abstract class ExpenseCardViewModelBase<TEntity> : CardViewModelBase<TEnt
 			.UseViewModelJournalAndAutocompleter<DivisionJournalViewModel>()
 			.UseViewModelDialog<DivisionViewModel>()
 			.Finish();
+
+		// статья подсказывает, облагается ли документ НДС, галочку потом можно поменять
+		Entity.PropertyChanged += (_, e) => {
+			if(e.PropertyName == nameof(Entity.ExpenseArticle) && Entity.ExpenseArticle != null)
+				ApplyWithoutVat(Entity.ExpenseArticle.WithoutVat);
+		};
 	}
 
 	public IEntityEntryViewModel AccountEntry { get; }
@@ -55,6 +62,8 @@ public abstract class ExpenseCardViewModelBase<TEntity> : CardViewModelBase<TEnt
 				$"Шаблон платежа №{templateId} не найден, возможно его удалили.", "Не удалось создать по шаблону");
 
 		Entity.FillFrom(template);
+		// шаблон без НДС (0) даёт документ без НДС, иначе НДС пересчитывается на дату документа
+		ApplyWithoutVat(TaxCalculator.HasVat(template.Account.TaxRegime) && template.Vat == 0);
 		return template;
 	}
 }

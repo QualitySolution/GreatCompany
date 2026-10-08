@@ -12,6 +12,7 @@
             <StackPanel Spacing="10">
                 <TextBlock Text="Название" />
                 <TextBox Text="{Binding Entity.Name}" />
+                <CheckBox Content="Без НДС по умолчанию (субсидии, продажа ПО и т.п.)" IsChecked="{Binding Entity.WithoutVat}" />
             </StackPanel>
         </Border>
     </DockPanel>

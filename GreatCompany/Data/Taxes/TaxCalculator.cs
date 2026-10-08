@@ -41,6 +41,10 @@ public static class TaxCalculator {
 		if(!HasVat(regime))
 			return actual == 0m ? null : "при этом налоговом режиме НДС должен быть равен 0";
 
+		// НДС 0 на счёте с НДС - документ без НДС (зарплата, налоги, субсидии и т.п.)
+		if(actual == 0m)
+			return null;
+
 		var expected = CalculateVat(regime, costWithVat, date);
 		return Math.Abs(actual - expected) <= VatTolerance
 			? null

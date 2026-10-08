@@ -45,10 +45,12 @@ public static class PlansFromTemplates {
 		return new(missing.Count, all.Count - missing.Count);
 	}
 
-	// НДС пересчитывается на дату плана, ставка могла смениться
+	// НДС пересчитывается на дату плана, ставка могла смениться.
+	// шаблон без НДС (0) так и даёт план без НДС
 	static TPlan Plan<TPlan>(TPlan plan, Action<TPlan> fill) where TPlan : IVatDocument {
 		fill(plan);
-		plan.Vat = TaxCalculator.CalculateVat(plan.Account.TaxRegime, plan.Cost, plan.TaxDate);
+		if(plan.Vat != 0)
+			plan.Vat = TaxCalculator.CalculateVat(plan.Account.TaxRegime, plan.Cost, plan.TaxDate);
 		return plan;
 	}
 }

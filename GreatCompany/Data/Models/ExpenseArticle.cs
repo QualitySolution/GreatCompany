@@ -13,4 +13,9 @@ public class ExpenseArticle : PropertyChangedBase, IDomainObject {
 	[RequiredField]
 	[MaxText(255)]
 	public virtual string Name { get => name; set => SetField(ref name, value); }
+
+	// подставляется в документ при выборе статьи
+	bool withoutVat;
+	[Display(Name = "Без НДС")]
+	public virtual bool WithoutVat { get => withoutVat; set => SetField(ref withoutVat, value); }
 }

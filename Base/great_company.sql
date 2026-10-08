@@ -127,6 +127,7 @@ DROP TABLE IF EXISTS `income_articles`;
 CREATE TABLE `income_articles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `name` varchar(255) NOT NULL COMMENT 'Название',
+  `without_vat` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Без НДС',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Статья дохода';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -141,6 +142,7 @@ DROP TABLE IF EXISTS `expense_articles`;
 CREATE TABLE `expense_articles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
   `name` varchar(255) NOT NULL COMMENT 'Название',
+  `without_vat` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Без НДС',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Статья расхода';
 /*!40101 SET character_set_client = @saved_cs_client */;

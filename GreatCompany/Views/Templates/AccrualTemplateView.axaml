@@ -16,7 +16,10 @@
                 <TextBlock Text="Счёт" />
                 <widgets:EntityEntryView ViewModel="{Binding AccountEntry}" />
                 <TextBlock Text="Сумма" />
-                <NumericUpDown Value="{Binding Entity.Cost}" Minimum="0" FormatString="0.00" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <NumericUpDown Grid.Column="0" Value="{Binding Entity.Cost}" Minimum="0" FormatString="0.00" />
+                    <CheckBox Grid.Column="1" Margin="10,0,0,0" Content="Без НДС" IsChecked="{Binding WithoutVat}" IsVisible="{Binding ShowWithoutVat}" />
+                </Grid>
                 <TextBlock Text="Сумма НДС" IsVisible="{Binding ShowVat}" />
                 <NumericUpDown Value="{Binding Entity.Vat}" Minimum="0" FormatString="0.00" IsVisible="{Binding ShowVat}" />
                 <TextBlock Text="Проект" />

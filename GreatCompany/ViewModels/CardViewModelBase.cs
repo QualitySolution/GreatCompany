@@ -25,12 +25,32 @@ public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEn
 		if(Entity is INotifyPropertyChanged entity)
 			entity.PropertyChanged += (_, _) => HasChanges = true;
 
-		if(Entity is IVatDocument vatDocument && Entity is INotifyPropertyChanged vatSource)
+		if(Entity is IVatDocument vatDocument && Entity is INotifyPropertyChanged vatSource) {
+			// сохранённый документ с нулевым НДС на счёте с НДС - документ без НДС
+			withoutVat = TaxCalculator.HasVat(vatDocument.Account?.TaxRegime) && vatDocument.Vat == 0 && vatDocument.Cost is not (null or 0);
 			vatSource.PropertyChanged += (_, e) => OnVatInputChanged(vatDocument, e.PropertyName);
+		}
 	}
 
-	/// <summary>у документа без НДС по налоговому режиму счёта поле НДС не показывается</summary>
-	public bool ShowVat => Entity is IVatDocument document && TaxCalculator.HasVat(document.Account?.TaxRegime);
+	/// <summary>отказаться от НДС имеет смысл только на счёте с НДС</summary>
+	public bool ShowWithoutVat => Entity is IVatDocument document && TaxCalculator.HasVat(document.Account?.TaxRegime);
+
+	/// <summary>у документа без НДС поле НДС не показывается</summary>
+	public bool ShowVat => ShowWithoutVat && !WithoutVat;
+
+	bool withoutVat;
+	/// <summary>
+	/// в базе документ без НДС - это просто НДС 0, галочка только для удобства:
+	/// поставили - НДС обнуляется, сняли - снова считается сам
+	/// </summary>
+	public bool WithoutVat { get => withoutVat; set => ApplyWithoutVat(value); }
+
+	protected void ApplyWithoutVat(bool value) {
+		withoutVat = value;
+		OnPropertyChanged(nameof(WithoutVat));
+		if(Entity is IVatDocument document)
+			RecalculateVat(document);
+	}
 
 	// сумма всегда с НДС, поэтому НДС пересчитывается при смене суммы, счёта (режима) или даты (ставки).
 	// вручную его можно поправить только после, в пределах допуска, это проверяет валидация документа
@@ -38,8 +58,13 @@ public abstract class CardViewModelBase<TEntity> : EntityDialogViewModelBase<TEn
 		if(propertyName is not (nameof(IVatDocument.Cost) or nameof(IVatDocument.Account) or "Date"))
 			return;
 
-		document.Vat = TaxCalculator.CalculateVat(document.Account?.TaxRegime, document.Cost, document.TaxDate);
+		RecalculateVat(document);
+	}
+
+	void RecalculateVat(IVatDocument document) {
+		document.Vat = WithoutVat ? 0 : TaxCalculator.CalculateVat(document.Account?.TaxRegime, document.Cost, document.TaxDate);
 		OnPropertyChanged(nameof(ShowVat));
+		OnPropertyChanged(nameof(ShowWithoutVat));
 	}
 
 	// в библиотечном диалоге Entity - поле, а вьюхи биндятся на свойства

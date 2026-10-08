@@ -7,7 +7,7 @@
               GridLinesVisibility="All" CanUserResizeColumns="True" CanUserSortColumns="False">
         <DataGrid.Columns>
             <DataGridTextColumn Header="Код" Binding="{Binding Id, Mode=OneWay}" Width="60" CellStyleClasses="number" />
-            <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat=dd.MM.yyyy}" Width="95" />
+            <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat=dd.MM.yyyy}" Width="100" />
             <DataGridTextColumn Header="Назначение" Binding="{Binding Purpose, Mode=OneWay}" Width="3*" MinWidth="140" />
             <DataGridTextColumn Header="Сумма" Binding="{Binding Cost, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
             <DataGridTextColumn Header="Со счёта" Binding="{Binding FromAccountName, Mode=OneWay}" Width="*" MinWidth="80" />

@@ -129,6 +129,11 @@
                                 <fi:FluentIconSource Icon="Database" />
                             </fa:FANavigationViewItem.IconSource>
                         </fa:FANavigationViewItem>
+                        <fa:FANavigationViewItem x:Name="actualTransfersMenuItem" Content="Переводы">
+                            <fa:FANavigationViewItem.IconSource>
+                                <fi:FluentIconSource Icon="ArrowSwap" />
+                            </fa:FANavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem>
                     </fa:FANavigationViewItem.MenuItems>
                 </fa:FANavigationViewItem>
                 <fa:FANavigationViewItem x:Name="templatesMenuItem" Content="Шаблоны">

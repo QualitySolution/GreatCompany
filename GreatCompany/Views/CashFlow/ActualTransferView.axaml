@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.ViewModels.CashFlow"
+             xmlns:views="clr-namespace:GreatCompany.Views"
+             xmlns:widgets="clr-namespace:QS.Views.Control;assembly=QS.Project.Avalonia"
+             x:Class="GreatCompany.Views.CashFlow.ActualTransferView"
+             x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
+             x:DataType="vm:ActualTransferViewModel">
+    <DockPanel>
+        <views:CardButtons DockPanel.Dock="Top" Margin="8" Save="{Binding SaveCommand}" Cancel="{Binding CancelCommand}" />
+        <Border Classes="card" Margin="8,0,8,8" Width="460" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Дата" />
+                <CalendarDatePicker SelectedDate="{Binding Entity.Date}" HorizontalAlignment="Stretch" />
+                <TextBlock Text="Назначение" />
+                <TextBox Text="{Binding Entity.Purpose}" AcceptsReturn="True" Height="60" TextWrapping="Wrap" />
+                <TextBlock Text="Со счёта" />
+                <widgets:EntityEntryView ViewModel="{Binding FromAccountEntry}" />
+                <TextBlock Text="На счёт" />
+                <widgets:EntityEntryView ViewModel="{Binding ToAccountEntry}" />
+                <TextBlock Text="Сумма" />
+                <NumericUpDown Value="{Binding Entity.Cost}" Minimum="0" FormatString="0.00" />
+                <CheckBox Content="В долг" IsChecked="{Binding Entity.IsLoan}" />
+            </StackPanel>
+        </Border>
+    </DockPanel>
+</UserControl>

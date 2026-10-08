@@ -30,6 +30,8 @@ public static class DeletionConfiguration {
 			.AddDeleteDependence<ActualIncome>(x => x.Account)
 			.AddDeleteDependence<PlannedExpense>(x => x.Account)
 			.AddDeleteDependence<ActualExpense>(x => x.Account)
+			.AddDeleteDependence<ActualTransfer>(x => x.FromAccount)
+			.AddDeleteDependence<ActualTransfer>(x => x.ToAccount)
 			.AddDeleteDependence<AccrualTemplate>(x => x.Account)
 			.AddDeleteDependence<PaymentTemplate>(x => x.Account);
 
@@ -52,6 +54,7 @@ public static class DeletionConfiguration {
 
 		configuration.AddHibernateDeleteInfo<ActualIncome>();
 		configuration.AddHibernateDeleteInfo<ActualExpense>();
+		configuration.AddHibernateDeleteInfo<ActualTransfer>();
 		configuration.AddHibernateDeleteInfo<AccrualTemplate>();
 		configuration.AddHibernateDeleteInfo<PaymentTemplate>();
 	}

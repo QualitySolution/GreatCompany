@@ -262,6 +262,29 @@ CREATE TABLE `actual_expenses` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `actual_transfers`
+--
+
+DROP TABLE IF EXISTS `actual_transfers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `actual_transfers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор',
+  `date` date NOT NULL COMMENT 'Дата',
+  `purpose` text NOT NULL COMMENT 'Назначение',
+  `cost` decimal(19,2) NOT NULL COMMENT 'Сумма',
+  `from_account_id` int(10) unsigned NOT NULL COMMENT 'Со счёта',
+  `to_account_id` int(10) unsigned NOT NULL COMMENT 'На счёт',
+  `is_loan` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'В долг',
+  PRIMARY KEY (`id`),
+  KEY `fk_actual_transfers_from_account_idx` (`from_account_id`),
+  KEY `fk_actual_transfers_to_account_idx` (`to_account_id`),
+  CONSTRAINT `fk_actual_transfers_from_account` FOREIGN KEY (`from_account_id`) REFERENCES `accounts` (`id`),
+  CONSTRAINT `fk_actual_transfers_to_account` FOREIGN KEY (`to_account_id`) REFERENCES `accounts` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Факт - перевод между счетами';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `accrual_templates`
 --
 

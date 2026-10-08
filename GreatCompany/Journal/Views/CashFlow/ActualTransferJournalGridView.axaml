@@ -1,0 +1,18 @@
+<UserControl x:Class="GreatCompany.Journal.Views.CashFlow.ActualTransferJournalGridView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:journal="clr-namespace:GreatCompany.Journal.ViewModels.CashFlow"
+             x:DataType="journal:ActualTransferJournalNode">
+    <DataGrid x:Name="dataGrid" IsReadOnly="True" AutoGenerateColumns="False"
+              GridLinesVisibility="All" CanUserResizeColumns="True" CanUserSortColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Код" Binding="{Binding Id, Mode=OneWay}" Width="60" CellStyleClasses="number" />
+            <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat=dd.MM.yyyy}" Width="95" />
+            <DataGridTextColumn Header="Назначение" Binding="{Binding Purpose, Mode=OneWay}" Width="3*" MinWidth="140" />
+            <DataGridTextColumn Header="Сумма" Binding="{Binding Cost, Mode=OneWay, StringFormat=N2}" Width="105" CellStyleClasses="number" />
+            <DataGridTextColumn Header="Со счёта" Binding="{Binding FromAccountName, Mode=OneWay}" Width="*" MinWidth="80" />
+            <DataGridTextColumn Header="На счёт" Binding="{Binding ToAccountName, Mode=OneWay}" Width="*" MinWidth="80" />
+            <DataGridCheckBoxColumn Header="В долг" Binding="{Binding IsLoan, Mode=OneWay}" Width="75" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

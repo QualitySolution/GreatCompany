@@ -55,7 +55,10 @@ public static class DeletionConfiguration {
 		configuration.AddHibernateDeleteInfo<ActualIncome>();
 		configuration.AddHibernateDeleteInfo<ActualExpense>();
 		configuration.AddHibernateDeleteInfo<ActualTransfer>();
-		configuration.AddHibernateDeleteInfo<AccrualTemplate>();
-		configuration.AddHibernateDeleteInfo<PaymentTemplate>();
+		// созданные по шаблону планы остаются, теряют только ссылку на него
+		configuration.AddHibernateDeleteInfo<AccrualTemplate>()
+			.AddClearDependence<PlannedIncome>(x => x.AccrualTemplate);
+		configuration.AddHibernateDeleteInfo<PaymentTemplate>()
+			.AddClearDependence<PlannedExpense>(x => x.PaymentTemplate);
 	}
 }

@@ -46,14 +46,15 @@ public abstract class ExpenseCardViewModelBase<TEntity> : CardViewModelBase<TEnt
 	/// заполняет карточку по шаблону платежа.
 	/// 0 - обычное создание с нуля
 	/// </summary>
-	protected void FillFromTemplate(int templateId) {
+	protected PaymentTemplate? FillFromTemplate(int templateId) {
 		if(templateId == 0)
-			return;
+			return null;
 
 		var template = UoW.GetById<PaymentTemplate>(templateId)
 			?? throw new AbortCreatingPageException(
 				$"Шаблон платежа №{templateId} не найден, возможно его удалили.", "Не удалось создать по шаблону");
 
 		Entity.FillFrom(template);
+		return template;
 	}
 }

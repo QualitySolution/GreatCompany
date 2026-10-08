@@ -12,6 +12,6 @@ public class PlannedExpenseViewModel : ExpenseCardViewModelBase<PlannedExpense> 
 		// при обычном создании 0
 		int templateId = 0)
 		: base(uowBuilder, deps) {
-		FillFromTemplate(templateId);
+		Entity.PaymentTemplate = FillFromTemplate(templateId);
 	}
 }

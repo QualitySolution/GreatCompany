@@ -25,6 +25,8 @@
                 <widgets:EntityEntryView ViewModel="{Binding ProjectEntry}" />
                 <TextBlock Text="Подразделение" />
                 <widgets:EntityEntryView ViewModel="{Binding DivisionEntry}" />
+                <TextBlock Text="День месяца" />
+                <NumericUpDown Value="{Binding Entity.DayOfMonth}" Minimum="1" Maximum="31" Increment="1" FormatString="0" />
                 <CheckBox Content="Отключён" IsChecked="{Binding Entity.IsDisabled}" />
             </StackPanel>
         </Border>

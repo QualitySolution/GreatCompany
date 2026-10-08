@@ -1,4 +1,5 @@
 ﻿using GreatCompany.Data.Models;
+using GreatCompany.Data.Planning;
 using GreatCompany.ViewModels.Templates;
 using NHibernate;
 using NHibernate.SqlCommand;
@@ -25,6 +26,12 @@ public class AccrualTemplateJournalViewModel : EntityJournalViewModelBase<Accrua
 	}
 
 	public TemplateFilterViewModel Filter { get; }
+
+	protected override void CreateNodeActions() {
+		base.CreateNodeActions();
+		ButtonActionsViewModel.AddAction("Заполнить план на месяц",
+			_ => NavigationManager.OpenViewModel<FillPlansViewModel, PlanKind>(this, PlanKind.Income));
+	}
 
 	protected override IQueryOver<AccrualTemplate> ItemsQuery(IUnitOfWork uow) {
 		AccrualTemplate templateAlias = null!;

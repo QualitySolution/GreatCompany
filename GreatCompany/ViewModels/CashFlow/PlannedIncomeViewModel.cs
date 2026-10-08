@@ -12,6 +12,6 @@ public class PlannedIncomeViewModel : IncomeCardViewModelBase<PlannedIncome> {
 		// при обычном создании 0
 		int templateId = 0)
 		: base(uowBuilder, deps) {
-		FillFromTemplate(templateId);
+		Entity.AccrualTemplate = FillFromTemplate(templateId);
 	}
 }

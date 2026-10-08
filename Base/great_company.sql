@@ -161,13 +161,16 @@ CREATE TABLE `planned_incomes` (
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
   `project_id` int(10) unsigned NOT NULL COMMENT 'Проект',
   `income_article_id` int(10) unsigned NOT NULL COMMENT 'Статья дохода',
+  `accrual_template_id` int(10) unsigned DEFAULT NULL COMMENT 'Шаблон начисления',
   PRIMARY KEY (`id`),
   KEY `fk_planned_incomes_account_idx` (`account_id`),
   KEY `fk_planned_incomes_project_idx` (`project_id`),
   KEY `fk_planned_incomes_income_article_idx` (`income_article_id`),
+  KEY `fk_planned_incomes_accrual_template_idx` (`accrual_template_id`),
   CONSTRAINT `fk_planned_incomes_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
   CONSTRAINT `fk_planned_incomes_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`),
-  CONSTRAINT `fk_planned_incomes_income_article` FOREIGN KEY (`income_article_id`) REFERENCES `income_articles` (`id`)
+  CONSTRAINT `fk_planned_incomes_income_article` FOREIGN KEY (`income_article_id`) REFERENCES `income_articles` (`id`),
+  CONSTRAINT `fk_planned_incomes_accrual_template` FOREIGN KEY (`accrual_template_id`) REFERENCES `accrual_templates` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='План - приход';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -217,15 +220,18 @@ CREATE TABLE `planned_expenses` (
   `division_id` int(10) unsigned NOT NULL COMMENT 'Дивизион',
   `project_id` int(10) unsigned DEFAULT NULL COMMENT 'Проект',
   `expense_article_id` int(10) unsigned NOT NULL COMMENT 'Статья расхода',
+  `payment_template_id` int(10) unsigned DEFAULT NULL COMMENT 'Шаблон платежа',
   PRIMARY KEY (`id`),
   KEY `fk_planned_expenses_account_idx` (`account_id`),
   KEY `fk_planned_expenses_division_idx` (`division_id`),
   KEY `fk_planned_expenses_project_idx` (`project_id`),
   KEY `fk_planned_expenses_expense_article_idx` (`expense_article_id`),
+  KEY `fk_planned_expenses_payment_template_idx` (`payment_template_id`),
   CONSTRAINT `fk_planned_expenses_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
   CONSTRAINT `fk_planned_expenses_division` FOREIGN KEY (`division_id`) REFERENCES `divisions` (`id`),
   CONSTRAINT `fk_planned_expenses_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`),
-  CONSTRAINT `fk_planned_expenses_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`)
+  CONSTRAINT `fk_planned_expenses_expense_article` FOREIGN KEY (`expense_article_id`) REFERENCES `expense_articles` (`id`),
+  CONSTRAINT `fk_planned_expenses_payment_template` FOREIGN KEY (`payment_template_id`) REFERENCES `payment_templates` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='План - расход';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -299,6 +305,7 @@ CREATE TABLE `accrual_templates` (
   `account_id` int(10) unsigned NOT NULL COMMENT 'Счет',
   `project_id` int(10) unsigned NOT NULL COMMENT 'Проект',
   `income_article_id` int(10) unsigned NOT NULL COMMENT 'Статья дохода',
+  `day_of_month` int(11) NOT NULL DEFAULT 1 COMMENT 'День месяца для плана',
   `is_disabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Отключён',
   PRIMARY KEY (`id`),
   KEY `fk_accrual_templates_account_idx` (`account_id`),
@@ -326,6 +333,7 @@ CREATE TABLE `payment_templates` (
   `division_id` int(10) unsigned NOT NULL COMMENT 'Дивизион',
   `project_id` int(10) unsigned DEFAULT NULL COMMENT 'Проект',
   `expense_article_id` int(10) unsigned NOT NULL COMMENT 'Статья расхода',
+  `day_of_month` int(11) NOT NULL DEFAULT 1 COMMENT 'День месяца для плана',
   `is_disabled` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Отключён',
   PRIMARY KEY (`id`),
   KEY `fk_payment_templates_account_idx` (`account_id`),

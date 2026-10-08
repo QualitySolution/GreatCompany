@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.ViewModels.Templates"
+             x:Class="GreatCompany.Views.Templates.FillPlansView"
+             x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
+             x:DataType="vm:FillPlansViewModel">
+    <StackPanel Margin="16" Spacing="10" Width="320">
+        <TextBlock Text="По всем включённым шаблонам будут созданы планы на выбранный месяц. Планы, уже созданные по шаблону в этом месяце, не дублируются."
+                   TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <ComboBox ItemsSource="{x:Static vm:FillPlansViewModel.Months}" SelectedIndex="{Binding MonthIndex}" Width="160" />
+            <NumericUpDown Value="{Binding Year}" Minimum="2000" Maximum="2100" Increment="1" FormatString="0" Width="150" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+            <Button Classes="primary" Content="Заполнить" Command="{Binding FillCommand}" />
+            <Button Content="Отмена" Command="{Binding CancelCommand}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

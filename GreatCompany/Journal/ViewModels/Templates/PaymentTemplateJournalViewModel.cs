@@ -1,4 +1,5 @@
 ﻿using GreatCompany.Data.Models;
+using GreatCompany.Data.Planning;
 using GreatCompany.ViewModels.Templates;
 using NHibernate;
 using NHibernate.SqlCommand;
@@ -25,6 +26,12 @@ public class PaymentTemplateJournalViewModel : EntityJournalViewModelBase<Paymen
 	}
 
 	public TemplateFilterViewModel Filter { get; }
+
+	protected override void CreateNodeActions() {
+		base.CreateNodeActions();
+		ButtonActionsViewModel.AddAction("Заполнить план на месяц",
+			_ => NavigationManager.OpenViewModel<FillPlansViewModel, PlanKind>(this, PlanKind.Expense));
+	}
 
 	protected override IQueryOver<PaymentTemplate> ItemsQuery(IUnitOfWork uow) {
 		PaymentTemplate templateAlias = null!;

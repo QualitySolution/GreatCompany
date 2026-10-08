@@ -40,14 +40,15 @@ public abstract class IncomeCardViewModelBase<TEntity> : CardViewModelBase<TEnti
 	/// заполняет карточку по шаблону начисления.
 	/// 0 - обычное создание с нуля
 	/// </summary>
-	protected void FillFromTemplate(int templateId) {
+	protected AccrualTemplate? FillFromTemplate(int templateId) {
 		if(templateId == 0)
-			return;
+			return null;
 
 		var template = UoW.GetById<AccrualTemplate>(templateId)
 			?? throw new AbortCreatingPageException(
 				$"Шаблон начисления №{templateId} не найден, возможно его удалили.", "Не удалось создать по шаблону");
 
 		Entity.FillFrom(template);
+		return template;
 	}
 }

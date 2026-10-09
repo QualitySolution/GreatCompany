@@ -141,6 +141,11 @@
                         <fi:FluentIconSource Icon="DataBarVertical" />
                     </fa:FANavigationViewItem.IconSource>
                     <fa:FANavigationViewItem.MenuItems>
+                        <fa:FANavigationViewItem x:Name="accountsDashboardMenuItem" Content="Счета">
+                            <fa:FANavigationViewItem.IconSource>
+                                <fi:FluentIconSource Icon="Wallet" />
+                            </fa:FANavigationViewItem.IconSource>
+                        </fa:FANavigationViewItem>
                         <fa:FANavigationViewItem x:Name="incomeExpenseMenuItem" Content="Доходы и расходы">
                             <fa:FANavigationViewItem.IconSource>
                                 <fi:FluentIconSource Icon="DataArea" />

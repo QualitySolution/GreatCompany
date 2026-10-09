@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GreatCompany.ViewModels.Analytics"
+             x:Class="GreatCompany.Views.Analytics.AccountsDashboardView"
+             x:CompileBindings="True"
+             Background="{DynamicResource QsBrushCanvas}"
+             x:DataType="vm:AccountsDashboardViewModel">
+    <UserControl.Styles>
+        <Style Selector="Border.account TextBlock.secondary">
+            <Setter Property="Foreground" Value="{DynamicResource QsBrushTextSecondary}" />
+        </Style>
+        <Style Selector="Border.account TextBlock.positive">
+            <Setter Property="Foreground" Value="#2E9E4A" />
+        </Style>
+        <Style Selector="Border.account TextBlock.negative">
+            <Setter Property="Foreground" Value="#D64545" />
+        </Style>
+        <!-- сумма по всем счетам выделена цветом темы -->
+        <Style Selector="Border.card.total">
+            <Setter Property="Background" Value="{DynamicResource QsBrushPrimary}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimary}" />
+        </Style>
+        <Style Selector="Border.total TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+        </Style>
+        <!-- красный на цветной итоговой карточке плохо читается, там выделяем жирным -->
+        <Style Selector="TextBlock.critical">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+    </UserControl.Styles>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8">
+            <Button Content="Обновить" Command="{Binding RefreshCommand}" />
+        </StackPanel>
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Cards}" Margin="4,0,4,8">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:AccountCard">
+                        <Border Classes="card" Classes.total="{Binding IsTotal}" Classes.account="{Binding !IsTotal}"
+                                Width="280" Margin="4">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Balance}" FontSize="26" FontWeight="Bold"
+                                           Classes.negative="{Binding IsBalanceNegative}" />
+                                <TextBlock Text="{Binding Change}"
+                                           Classes.positive="{Binding IsChangePositive}" Classes.negative="{Binding IsChangeNegative}" />
+                                <TextBlock Text="{Binding Outflow}" Classes="secondary" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding DaysLeft}" Classes="secondary" TextWrapping="Wrap"
+                                           Classes.negative="{Binding IsDaysLeftCritical}" Classes.critical="{Binding IsDaysLeftCritical}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

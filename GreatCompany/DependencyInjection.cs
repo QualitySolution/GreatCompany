@@ -115,6 +115,7 @@ internal static class DependencyInjection {
 	/// Цепочку обработчиков проходит каждая непредвиденная ошибка, неопознанная попадает в отчёт
 	/// </summary>
 	public static ContainerBuilder AddErrorReporting(this ContainerBuilder builder) {
+		builder.RegisterType<AvaloniaErrorDialog>().As<IUnexpectedErrorDialog>().SingleInstance();
 		builder.RegisterType<ErrorHandlingService>().As<IErrorHandlingService>().SingleInstance();
 		builder.RegisterType<DesktopErrorReporter>().As<IErrorReporter>().SingleInstance();
 		builder.RegisterType<LogService>().As<ILogService>().SingleInstance();

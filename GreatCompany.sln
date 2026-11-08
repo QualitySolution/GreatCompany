@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Configuration", "QSProje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.DbManagement", "QSProjects\QS.DbManagement\QS.DbManagement.csproj", "{FAF198FD-57A5-436C-B782-10F0BA0B2ACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting", "QSProjects\QS.ErrorReporting\QS.ErrorReporting.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting.Desktop", "QSProjects\QS.ErrorReporting.Desktop\QS.ErrorReporting.Desktop.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting.Client", "QSProjects\QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj", "{BABA2CB7-6EFE-4B1B-9324-74CBCBACF257}"
 EndProject

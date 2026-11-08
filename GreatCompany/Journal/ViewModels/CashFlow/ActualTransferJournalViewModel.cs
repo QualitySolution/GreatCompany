@@ -45,6 +45,7 @@ public class ActualTransferJournalViewModel : EntityJournalViewModelBase<ActualT
 				.Select(() => fromAlias.Name).WithAlias(() => resultAlias.FromAccountName)
 				.Select(() => toAlias.Name).WithAlias(() => resultAlias.ToAccountName))
 			.OrderBy(() => transferAlias.Date).Desc
+			.ThenBy(() => transferAlias.Id).Desc
 			.TransformUsing(Transformers.AliasToBean<ActualTransferJournalNode>());
 	}
 }

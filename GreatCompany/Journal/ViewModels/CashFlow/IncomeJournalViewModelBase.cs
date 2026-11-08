@@ -62,6 +62,7 @@ public abstract class IncomeJournalViewModelBase<TEntity, TEntityViewModel>
 				return list;
 			})
 			.OrderBy(() => incomeAlias.Date).Desc
+			.ThenBy(() => incomeAlias.Id).Desc
 			.TransformUsing(Transformers.AliasToBean<IncomeJournalNode>());
 	}
 

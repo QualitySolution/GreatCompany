@@ -62,6 +62,7 @@ public abstract class ExpenseJournalViewModelBase<TEntity, TEntityViewModel>
 				return list;
 			})
 			.OrderBy(() => expenseAlias.Date).Desc
+			.ThenBy(() => expenseAlias.Id).Desc
 			.TransformUsing(Transformers.AliasToBean<ExpenseJournalNode>());
 	}
 

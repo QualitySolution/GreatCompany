@@ -31,7 +31,13 @@ public static class PlansFromTemplates {
 				session.Query<PaymentTemplate>().Where(x => !x.IsDisabled),
 				session.Query<PlannedExpense>().Where(x => x.PaymentTemplate != null && x.Date >= from && x.Date < to)
 					.Select(x => x.PaymentTemplate!.Id),
-				t => Plan(new PlannedExpense { PaymentTemplate = t, Date = t.PlanDate(month) }, p => p.FillFrom(t)));
+				t => ExpensePlan(t, month));
+	}
+
+	static PlannedExpense ExpensePlan(PaymentTemplate template, DateTime month) {
+		var plan = new PlannedExpense { PaymentTemplate = template, Date = template.PlanDate(month) };
+		plan.FillFrom(template);
+		return plan;
 	}
 
 	static PlanFillResult Fill<TTemplate>(IUnitOfWork uow, IQueryable<TTemplate> templates, IQueryable<int> filledIds,

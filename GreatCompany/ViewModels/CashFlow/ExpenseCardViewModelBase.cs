@@ -62,8 +62,9 @@ public abstract class ExpenseCardViewModelBase<TEntity> : CardViewModelBase<TEnt
 				$"Шаблон платежа №{templateId} не найден, возможно его удалили.", "Не удалось создать по шаблону");
 
 		Entity.FillFrom(template);
-		// шаблон без НДС (0) даёт документ без НДС, иначе НДС пересчитывается на дату документа
+		// Сумма НДС переносится из шаблона без пересчёта.
 		ApplyWithoutVat(TaxCalculator.HasVat(template.Account.TaxRegime) && template.Vat == 0);
+		Entity.Vat = template.Vat;
 		return template;
 	}
 }

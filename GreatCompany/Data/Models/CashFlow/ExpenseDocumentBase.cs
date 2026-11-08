@@ -59,7 +59,9 @@ public abstract class ExpenseDocumentBase : PropertyChangedBase, IDomainObject, 
 		if(Account == null)
 			yield break;
 
-		var error = TaxCalculator.CheckVat(Account.TaxRegime, Cost, Vat, TaxDate);
+		var error = !TaxCalculator.HasVat(Account.TaxRegime) && Vat.GetValueOrDefault() != 0
+			? "при этом налоговом режиме НДС должен быть равен 0"
+			: null;
 		if(error != null)
 			yield return new ValidationResult(error, new[] { nameof(Vat) });
 	}

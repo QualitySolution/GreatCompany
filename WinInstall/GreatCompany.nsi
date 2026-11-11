@@ -3,7 +3,7 @@ SetCompressor /SOLID lzma
 SetDatablockOptimize on
 
 ;--------------------------------
-!define PRODUCT_VERSION "0.1.0"
+!define PRODUCT_VERSION "0.3.0"
 !define SETUP_NAME "GreatCompany"
 !define EXE_NAME "GreatCompany"
 !define PRODUCT_NAME "QS: Великая компания"

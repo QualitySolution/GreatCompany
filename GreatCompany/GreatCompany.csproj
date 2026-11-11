@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -39,6 +39,7 @@
     <ProjectReference Include="..\QSProjects\QS.Cloud.Client\QS.Cloud.Client.csproj" />
     <ProjectReference Include="..\QSProjects\QS.Launcher.Avalonia\QS.Launcher.Avalonia.csproj" />
     <ProjectReference Include="..\QSProjects\QS.Launcher\QS.Launcher.csproj" />
+    <ProjectReference Include="..\QSProjects\QS.Launcher.Updater.Avalonia\QS.Launcher.Updater.Avalonia.csproj" />
     <ProjectReference Include="..\QSProjects\QS.Project.Avalonia\QS.Project.Avalonia.csproj" />
     <ProjectReference Include="..\QSProjects\QS.Project.Desktop\QS.Project.Desktop.csproj" />
   </ItemGroup>

@@ -23,6 +23,10 @@ public static class GreatCompanyLauncherConfiguration {
 				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
 				"GreatCompany",
 				"connections.json"),
+			SettingsJsonFileName = Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+				"GreatCompany",
+				"settings.json"),
 			OldConfigFilename = null,
 			MakeDefaultConnections = () => [
 				new Dictionary<string, string> {

@@ -91,10 +91,11 @@ public partial class GreatCompanyApp : Application {
 
 		// главного окна нет - вход не состоялся или окно не создалось, работать дальше нечему
 		launcherWindow.Closed += (_, _) => {
-			if(desktop.MainWindow == null)
+			if(desktop.MainWindow == launcherWindow)
 				ShutdownApplication(desktop);
 		};
 
+		desktop.MainWindow = launcherWindow;
 		launcherWindow.Show();
 	}
 

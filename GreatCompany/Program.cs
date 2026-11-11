@@ -1,4 +1,10 @@
 using Avalonia;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using QS.Configuration;
+using QS.Launcher.Updates;
+using QS.Updater.App;
+using QS.Updater.App.Views;
 using GreatCompany.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QS.ErrorReporting;
@@ -39,7 +45,7 @@ public static class Program {
 		logger.Info("=== Завершение приложения ===");
 	}
 
-	private static ServiceProvider ConfigureStartupServices(bool withLauncher) {
+	private static AutofacServiceProvider ConfigureStartupServices(bool withLauncher) {
 		var startupServices = new ServiceCollection();
 
 		if(withLauncher) {
@@ -49,10 +55,22 @@ public static class Program {
 				.AddPages()
 				.AddLauncherViewModels()
 				.UseInProcessRunner()
-				.AddInteractive();
+				.AddInteractive()
+				.AddGuiClasses();
 		}
 
-		return startupServices.BuildServiceProvider();
+		var builder = new ContainerBuilder();
+		builder.Populate(startupServices);
+		if(withLauncher) {
+			builder.Register(ctx => {
+				var settings = new LauncherSettings(ctx.Resolve<LauncherOptions>().SettingsJsonFileName);
+				settings.Reload();
+				return settings;
+			}).As<IChangeableConfiguration>().SingleInstance();
+			builder.RegisterType<UpdateChannelService>().As<IUpdateChannelService>().SingleInstance();
+			builder.AddAvaloniaNavigation(typeof(NewVersionView).Assembly).AddLauncherUpdates();
+		}
+		return new AutofacServiceProvider(builder.Build());
 	}
 
 	private static void ClearConnectionEnvironment() {

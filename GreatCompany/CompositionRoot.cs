@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using MySqlConnector;
+using QS.BaseParameters;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Tool.hbm2ddl;
@@ -22,6 +24,11 @@ internal static class CompositionRoot {
 
 		builder.Register(c => new AutofacViewModelResolver(c.Resolve<ILifetimeScope>()))
 			.As<IViewModelResolver>().SingleInstance();
+
+		builder.Register(c => new MySqlConnectionFactory(c.Resolve<MySqlConnectionStringBuilder>().ConnectionString))
+			.As<IConnectionFactory>().SingleInstance();
+		builder.Register(c => new ParametersService(c.Resolve<IConnectionFactory>().OpenConnection))
+			.AsSelf().SingleInstance();
 
 		var services = new ServiceCollection();
 		services.AddDatabaseSettings(settings);

@@ -17,6 +17,14 @@ node('Win') {
 			userRemoteConfigs: scm.userRemoteConfigs
 		])
 	}
+	stage('Test') {
+		powershell 'Remove-Item -Path "GreatCompany.Test\\TestResults" -Force -Recurse -ErrorAction SilentlyContinue'
+		try {
+			bat 'dotnet test GreatCompany.Test\\GreatCompany.Test.csproj --configuration Release --logger trx'
+		} finally {
+			mstest testResultsFile: 'GreatCompany.Test/TestResults/*.trx', keepLongStdio: true
+		}
+	}
 	stage('Build App') {
 		bat 'dotnet publish GreatCompany\\GreatCompany.csproj --configuration Release -r win-x64 --no-self-contained'
 	}

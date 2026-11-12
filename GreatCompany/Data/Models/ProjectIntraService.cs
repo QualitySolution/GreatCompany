@@ -17,4 +17,6 @@ public class ProjectIntraService : PropertyChangedBase, IDomainObject {
 	[Display(Name = "Intra ID сервиса")]
 	[RequiredField]
 	public virtual uint IntraId { get => intraId; set => SetField(ref intraId, value); }
+
+	public virtual string Title => $"Сервис Intra {IntraId}";
 }

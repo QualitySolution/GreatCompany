@@ -21,6 +21,7 @@ public static class DeletionConfiguration {
 			.AddDeleteDependence<PaymentTemplate>(x => x.Division);
 
 		configuration.AddHibernateDeleteInfo<Project>()
+			.AddDeleteDependence<ProjectIntraService>(x => x.Project)
 			.AddClearDependence<PlannedIncome>(x => x.Project)
 			.AddClearDependence<ActualIncome>(x => x.Project)
 			.AddClearDependence<AccrualTemplate>(x => x.Project)
@@ -58,6 +59,7 @@ public static class DeletionConfiguration {
 		configuration.AddHibernateDeleteInfo<ActualIncome>();
 		configuration.AddHibernateDeleteInfo<ActualExpense>();
 		configuration.AddHibernateDeleteInfo<ActualTransfer>();
+		configuration.AddHibernateDeleteInfo<ProjectIntraService>();
 		// созданные по шаблону планы остаются, теряют только ссылку на него
 		configuration.AddHibernateDeleteInfo<AccrualTemplate>()
 			.AddClearDependence<PlannedIncome>(x => x.AccrualTemplate);
